@@ -26,7 +26,7 @@ namespace FBL.Tokenization.TokenParsing.ParsingModules
 
         private static bool IsMatching(char c, Tokenizer.State state)
         {
-            const string possible = "!@#$%^&*_+~-=";
+            const string possible = "!@#$%^&*/_+~-=";
             if (Char.IsLetterOrDigit(c) || possible.Contains(c))
             {
                 if (c > 127)

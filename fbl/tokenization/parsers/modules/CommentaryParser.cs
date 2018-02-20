@@ -11,6 +11,8 @@ namespace FBL.Tokenization.TokenParsing.ParsingModules
                 var begin = state.Index;
                 state.Index += 1;
 
+                ParseInlineCommentary(state);
+
                 if (state.IsErrorOccured())
                     state.Index = begin + 2;
 

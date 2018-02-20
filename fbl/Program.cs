@@ -59,15 +59,6 @@ namespace FBL
 
             Console.WriteLine("\n\n==--  RUN MAIN  --==");
             interpreter.Run("main", new StringNode("world"));
-
-            /*
-             File.WriteAllText(
-                Path.GetFileNameWithoutExtension(args[0]) + "_gen.cpp",
-                new CppGenerationVisitor().Visit(ast).ToString()
-            );
-            */
-
-            Console.WriteLine("\n\nHALT");
         }
     }
 }

@@ -15,7 +15,7 @@
             Value = this;
         }
 
-        public NumberNode(double value)
+        public NumberNode(decimal value)
         {
             NumericValue = value.ToString();
             IsDecimal = true;

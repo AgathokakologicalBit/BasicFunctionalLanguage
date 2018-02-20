@@ -46,7 +46,7 @@ namespace FBL.Parsing.Nodes
         /// <returns>Formatted string</returns>
         public override string ToString()
         {
-            return $"(def [ {Parameter} ] {String.Join(" : ", Code ?? new StringNode("ø"))} )";
+            return $"(def [ {Parameter?.Name ?? "ø"} ] {String.Join(" : ", Code ?? new StringNode("ø"))} )";
         }
 
 

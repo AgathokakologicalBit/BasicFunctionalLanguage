@@ -41,10 +41,23 @@ namespace FBL.Interpretation.Modules
                 context
             );
             interpreter.SetVariable(
+                "number",
+                new FunctionNode(ToNumber, context) { Parameter = new VariableNode("value") },
+                context
+            );
+            interpreter.SetVariable(
                 "string",
                 new FunctionNode(ToString, context) { Parameter = new VariableNode("value") },
                 context
             );
+
+
+            interpreter.SetVariable(
+                "abs",
+                new FunctionNode(NumberAbsolute, context) { Parameter = new VariableNode("value") },
+                context
+            );
+
 
             interpreter.SetVariable(
                 "+",
@@ -56,6 +69,43 @@ namespace FBL.Interpretation.Modules
                 new FunctionNode(NumbersSub, context) { Parameter = new VariableNode("left") },
                 context
             );
+            interpreter.SetVariable(
+                "*",
+                new FunctionNode(NumbersMul, context) { Parameter = new VariableNode("left") },
+                context
+            );
+            interpreter.SetVariable(
+                "/",
+                new FunctionNode(NumbersDiv, context) { Parameter = new VariableNode("left") },
+                context
+            );
+            interpreter.SetVariable(
+                "%",
+                new FunctionNode(NumbersMod, context) { Parameter = new VariableNode("left") },
+                context
+            );
+
+
+            interpreter.SetVariable("true", new NumberNode(1), context);
+            interpreter.SetVariable("false", new NumberNode(0), context);
+            interpreter.SetVariable(
+                "not",
+                new FunctionNode(
+                    (e) => new NumberNode(ToNumber(e).NumericValue == "0" ? 1 : 0),
+                    context
+                )
+                { Parameter = new VariableNode("value") },
+                context
+            );
+            interpreter.SetVariable(
+                "if",
+                new FunctionNode(
+                    IfExpression,
+                    context
+                )
+                { Parameter = new VariableNode("condition") },
+                context
+            );
         }
 
         ExpressionNode Import(ExpressionNode input)
@@ -63,6 +113,18 @@ namespace FBL.Interpretation.Modules
             // TODO: Do something Oo
             return new ExpressionNode();
         }
+
+        NumberNode NumberAbsolute(ExpressionNode input)
+            => new NumberNode(Math.Abs(decimal.Parse(ToNumber(input).NumericValue)));
+
+        ExpressionNode IfExpression(ExpressionNode condition)
+            => new FunctionNode((ExpressionNode onTrue)
+                => new FunctionNode(
+                    (ExpressionNode onFalse) => ToNumber(condition).NumericValue == "0" ? onFalse : onTrue,
+                    interpreter.GetGlobalContext())
+                { Parameter = new VariableNode("on_false") },
+                interpreter.GetGlobalContext())
+            { Parameter = new VariableNode("on_true") };
 
         ExpressionNode Set(ExpressionNode input)
             => new FunctionNode((v) => interpreter.ChangeValue(input, v, input.Context), input.Context)
@@ -89,6 +151,14 @@ namespace FBL.Interpretation.Modules
             return new NumberNode("0", false);
         }
 
+        NumberNode ToNumber(ExpressionNode node)
+        {
+            if (decimal.TryParse(node.ToString(), out decimal value))
+                return new NumberNode(value.ToString(), true);
+
+            return new NumberNode("0", false);
+        }
+
         StringNode ToString(ExpressionNode node) => new StringNode(node.ToString());
 
 
@@ -100,8 +170,8 @@ namespace FBL.Interpretation.Modules
                     if (left is NumberNode && right is NumberNode)
                     {
                         return new NumberNode(
-                            + double.Parse(ToInt(left).NumericValue)
-                            + double.Parse(ToInt(right).NumericValue));
+                              decimal.Parse(ToNumber(left).NumericValue)
+                            + decimal.Parse(ToNumber(right).NumericValue));
                     }
 
                     return new StringNode(left.ToString() + right.ToString());
@@ -114,9 +184,45 @@ namespace FBL.Interpretation.Modules
         {
             return new FunctionNode(
                 (right) => new NumberNode((
-                     + int.Parse(ToInt(left).NumericValue)
-                     - int.Parse(ToInt(right).NumericValue)
-                    ).ToString(), false)
+                       decimal.Parse(ToNumber(left).NumericValue)
+                     - decimal.Parse(ToNumber(right).NumericValue)
+                    ).ToString(), true)
+                , interpreter.GetGlobalContext()
+            )
+            { Parameter = new VariableNode("right") };
+        }
+
+        ExpressionNode NumbersMul(ExpressionNode left)
+        {
+            return new FunctionNode(
+                (right) => new NumberNode((
+                       decimal.Parse(ToNumber(left).NumericValue)
+                     * decimal.Parse(ToNumber(right).NumericValue)
+                    ).ToString(), true)
+                , interpreter.GetGlobalContext()
+            )
+            { Parameter = new VariableNode("right") };
+        }
+
+        ExpressionNode NumbersDiv(ExpressionNode left)
+        {
+            return new FunctionNode(
+                (right) => new NumberNode((
+                       decimal.Parse(ToNumber(left).NumericValue)
+                     / decimal.Parse(ToNumber(right).NumericValue)
+                    ).ToString(), true)
+                , interpreter.GetGlobalContext()
+            )
+            { Parameter = new VariableNode("right") };
+        }
+
+        ExpressionNode NumbersMod(ExpressionNode left)
+        {
+            return new FunctionNode(
+                (right) => new NumberNode((
+                       decimal.Parse(ToNumber(left).NumericValue)
+                     % decimal.Parse(ToNumber(right).NumericValue)
+                    ).ToString(), true)
                 , interpreter.GetGlobalContext()
             )
             { Parameter = new VariableNode("right") };
