@@ -1,11 +1,13 @@
-﻿namespace FBL.Parsing.Nodes
+﻿using FBL.Interpretation;
+
+namespace FBL.Parsing.Nodes
 {
     public class FunctionCallNode : ExpressionNode
     {
         public ExpressionNode CalleeExpression { get; set; }
         public ExpressionNode Argument { get; set; }
 
-        
+
         public FunctionCallNode()
         {
             Value = this;
@@ -22,8 +24,9 @@
         {
             return new FunctionCallNode
             {
-                CalleeExpression = CalleeExpression,
-                Argument = Argument.Clone()
+                CalleeExpression = CalleeExpression.Clone(),
+                Argument = Argument.Clone(),
+                Context = Context
             };
         }
     }

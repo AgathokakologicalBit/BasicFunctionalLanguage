@@ -17,7 +17,7 @@
 
         public override ExpressionNode Clone()
         {
-            return new StringNode(StringValue);
+            return new StringNode(StringValue) { Context = Context };
         }
     }
 }

@@ -1,6 +1,6 @@
 # Visual studio
 *.config
-*.csproj
+*.csproj*
 *.sln
 
 .vs

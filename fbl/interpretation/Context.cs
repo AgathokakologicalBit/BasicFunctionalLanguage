@@ -8,7 +8,7 @@ namespace FBL.Interpretation
     {
         public Context parent;
         public Dictionary<string, ExpressionNode> values;
-        
+
         public Context(Context context)
         {
             this.parent = context;

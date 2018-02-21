@@ -161,7 +161,7 @@ namespace FBL.Parsing
 
             if (!state.IsErrorOccured())
                 return result;
-            
+
             ReportError(state);
             return null;
         }

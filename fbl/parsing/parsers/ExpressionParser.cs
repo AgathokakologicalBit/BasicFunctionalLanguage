@@ -29,7 +29,7 @@ namespace FBL.Parsing
                 {
                     unit = fc_unit;
                 }
-                
+
                 block.Code.Add(unit);
             } while (state.GetToken().Is(TokenSubType.Colon));
 
@@ -41,7 +41,7 @@ namespace FBL.Parsing
             if (state.GetToken().Is(TokenSubType.BraceSquareLeft))
             {
                 state.GetNextNeToken();
-                var func = new FunctionNode(null);
+                var func = new FunctionNode();
 
                 FunctionParser.ParseParametersList(state, func);
                 if (state.IsErrorOccured())

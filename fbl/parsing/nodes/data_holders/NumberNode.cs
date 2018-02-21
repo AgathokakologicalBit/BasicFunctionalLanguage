@@ -30,7 +30,7 @@
 
         public override ExpressionNode Clone()
         {
-            return new NumberNode(NumericValue, IsDecimal);
+            return new NumberNode(NumericValue, IsDecimal) { Context = Context };
         }
     }
 }

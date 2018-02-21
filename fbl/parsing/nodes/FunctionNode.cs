@@ -9,7 +9,7 @@ namespace FBL.Parsing.Nodes
         /// Parent Class/Function
         /// </summary>
         public Node Parent { get; set; }
-        
+
         /// <summary>
         /// List of named parameters
         /// </summary>
@@ -23,20 +23,18 @@ namespace FBL.Parsing.Nodes
 
         public bool IsNative { get; set; }
         public Func<ExpressionNode, ExpressionNode> Function { get; set; }
-        
 
-        public FunctionNode(Context context)
+
+        public FunctionNode()
         {
             this.IsNative = false;
             this.Value = this;
-            this.Context = new Context(context);
         }
 
-        public FunctionNode(Func<ExpressionNode, ExpressionNode> import, Context context)
+        public FunctionNode(Func<ExpressionNode, ExpressionNode> import)
         {
             this.IsNative = true;
             this.Function = import;
-            this.Context = new Context(context);
         }
 
         /// <summary>
@@ -52,13 +50,15 @@ namespace FBL.Parsing.Nodes
 
         public override ExpressionNode Clone()
         {
-            return new FunctionNode (Context)
+            return new FunctionNode
             {
+                Value = Value,
                 Parent = Parent,
                 Parameter = Parameter,
-                Code = Code?.Clone(),
+                Code = Code,
                 IsNative = IsNative,
                 Function = Function,
+                Context = Context
             };
         }
     }

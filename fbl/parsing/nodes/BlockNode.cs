@@ -22,7 +22,7 @@ namespace FBL.Parsing.Nodes
 
         public override ExpressionNode Clone()
         {
-            var new_block = new BlockNode();
+            var new_block = new BlockNode() { Context = Context };
 
             foreach (var c in Code)
                 new_block.Code.Add(c.Clone());

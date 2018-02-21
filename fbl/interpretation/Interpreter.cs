@@ -10,6 +10,43 @@ namespace FBL.Interpretation
         private List<IModule> loadedModules = new List<IModule>();
 
 
+        public ExpressionNode Run(CoreNode program)
+        {
+            var result = new ExpressionNode();
+
+            foreach (var exp in program.code)
+                result = Evaluate((dynamic)exp, GetGlobalContext());
+
+            return result;
+        }
+
+        public ExpressionNode Run(ExpressionNode node, StringNode data)
+        {
+            return Evaluate(new FunctionCallNode
+            {
+                Argument = data,
+                CalleeExpression = node,
+                Context = globalContext
+            }, globalContext);
+        }
+
+        public ExpressionNode Run(string name, ExpressionNode args)
+        {
+            if (!globalContext.values.TryGetValue(name, out ExpressionNode node))
+                return new ExpressionNode();
+
+            if (!(node is FunctionNode f))
+                return new ExpressionNode();
+
+            return Evaluate(new FunctionCallNode
+            {
+                Argument = args,
+                CalleeExpression = f,
+                Context = globalContext
+            }, globalContext);
+        }
+
+
         public void AddModule(IModule module)
         {
             module.OnLoad(this);
@@ -40,44 +77,7 @@ namespace FBL.Interpretation
             return new ExpressionNode();
         }
 
-        public ExpressionNode Run(ExpressionNode node, StringNode data)
-        {
-            try
-            {
-                return Evaluate(new FunctionCallNode
-                {
-                    Argument = data,
-                    CalleeExpression = node,
-                    Context = globalContext
-                }, globalContext);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new ExpressionNode();
-            }
-        }
-
         public Context GetGlobalContext() => globalContext;
-
-
-        public ExpressionNode Run(CoreNode program)
-        {
-            var result = new ExpressionNode();
-
-            try
-            {
-                foreach (var exp in program.code)
-                    result = Evaluate((dynamic)exp, GetGlobalContext());
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return new ExpressionNode();
-            }
-
-            return result;
-        }
 
         private ExpressionNode Evaluate(FunctionCallNode node, Context context)
         {
@@ -85,47 +85,28 @@ namespace FBL.Interpretation
             if (left is FunctionNode left_func)
             {
                 ExpressionNode right = Evaluate((dynamic)node.Argument, context);
-                left_func.Context.values[left_func.Parameter?.Name ?? "it"] = right;
 
                 if (left_func.IsNative)
                     return left_func.Function(right);
 
-                return Evaluate((dynamic)left_func.Code, left_func.Context);
+                var sub_context = new Context(left_func.Context);
+                sub_context.values.Add(left_func.Parameter?.Name ?? "it", right);
+                return Evaluate((dynamic)left_func.Code, sub_context);
             }
 
-            Console.WriteLine("Current context:");
-            Console.WriteLine(context);
+            var ctx = context;
+            while (ctx != null)
+            {
+                Console.WriteLine("Current context:");
+                Console.WriteLine(ctx);
+                ctx = ctx.parent;
+            }
+
 
             throw new InvalidOperationException(
-                $"calling '{node.CalleeExpression?.GetType().Name}'\n" +
+                $"calling '{node.CalleeExpression?.GetType().Name ?? "null"}' {((VariableNode)node.CalleeExpression).Name}\n" +
                 $"  evaluated to: {left?.ToString() ?? "null"}\n" +
                 $"is impossible");
-        }
-
-        public ExpressionNode Run(string name, ExpressionNode args)
-        {
-            if (!globalContext.values.TryGetValue(name, out ExpressionNode node))
-                return new ExpressionNode();
-
-            if (!(node is FunctionNode f))
-                return new ExpressionNode();
-
-
-            try
-            {
-                return Evaluate(new FunctionCallNode
-                {
-                    Argument = args,
-                    CalleeExpression = f,
-                    Context = globalContext
-                }, globalContext);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            return new ExpressionNode();
         }
 
         private ExpressionNode Evaluate(BlockNode node, Context context)
@@ -143,11 +124,11 @@ namespace FBL.Interpretation
             var ctx = context;
             while (ctx != null)
             {
-                if (context.values.TryGetValue(node.Name, out ExpressionNode value))
+                if (ctx.values.TryGetValue(node.Name, out ExpressionNode value))
                     return value;
                 ctx = ctx.parent;
             }
-            
+
             var expression = new ExpressionNode();
             context.values.Add(node.Name, expression);
             expression.Context = context;

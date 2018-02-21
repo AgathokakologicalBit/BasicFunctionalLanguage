@@ -15,7 +15,7 @@
 
         Number,
         String,
-        
+
         Operator,
 
         EOF
@@ -41,7 +41,7 @@
         BraceRoundLeft, BraceRoundRight,
         BraceSquareLeft, BraceSquareRight,
         BraceCurlyLeft, BraceCurlyRight,
-        
+
         Colon, SemiColon,
 
         EndOfFile
