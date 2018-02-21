@@ -84,16 +84,7 @@ namespace FBL.Interpretation.Modules
                 new FunctionNode(NumbersMod) { Parameter = new VariableNode("left") },
                 context
             );
-
-
-            interpreter.SetVariable("true", new NumberNode(1), context);
-            interpreter.SetVariable("false", new NumberNode(0), context);
-            interpreter.SetVariable(
-                "not",
-                new FunctionNode((e, c) => new NumberNode(ToNumber(e, c).NumericValue == "0" ? 1 : 0))
-                { Parameter = new VariableNode("value") },
-                context
-            );
+            
             interpreter.SetVariable(
                 "if",
                 new FunctionNode(IfExpression)

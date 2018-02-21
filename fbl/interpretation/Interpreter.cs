@@ -96,9 +96,13 @@ namespace FBL.Interpretation
                 sub_context.Values.Add(left_func.Parameter?.Name ?? "it", right);
                 return Evaluate((dynamic)left_func.Code, sub_context);
             }
-            
+
+            string name = "";
+            if (node.CalleeExpression is VariableNode callee_var)
+                name = $"with name '{callee_var.Name}'";
+
             throw new InvalidOperationException(
-                $"calling '{node.CalleeExpression?.GetType().Name ?? "null"}'\n" +
+                $"calling '{node.CalleeExpression?.GetType().Name ?? "null"}' {name}\n" +
                 $"  evaluated to: {left?.ToString() ?? "null"}\n" +
                 $"is impossible");
         }
@@ -135,8 +139,8 @@ namespace FBL.Interpretation
 
         private ExpressionNode Evaluate(ExpressionNode node, Context context)
         {
-            var value = node ?? new ExpressionNode();
-            value.Context = value.Context ?? context;
+            var value = node?.Clone() ?? new ExpressionNode();
+            value.Context = context;
             return value;
         }
     }
