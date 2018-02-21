@@ -27,7 +27,7 @@
 
         public override ExpressionNode Clone()
         {
-            return new VariableNode(Name) { Context = Context };
+            return new VariableNode(Name);
         }
     }
 }

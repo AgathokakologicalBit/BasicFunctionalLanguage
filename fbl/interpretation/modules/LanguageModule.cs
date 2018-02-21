@@ -90,7 +90,7 @@ namespace FBL.Interpretation.Modules
             interpreter.SetVariable("false", new NumberNode(0), context);
             interpreter.SetVariable(
                 "not",
-                new FunctionNode((e) => new NumberNode(ToNumber(e).NumericValue == "0" ? 1 : 0))
+                new FunctionNode((e, c) => new NumberNode(ToNumber(e, c).NumericValue == "0" ? 1 : 0))
                 { Parameter = new VariableNode("value") },
                 context
             );
@@ -102,39 +102,40 @@ namespace FBL.Interpretation.Modules
             );
         }
 
-        ExpressionNode Import(ExpressionNode input)
+        ExpressionNode Import(ExpressionNode input, Context context)
         {
             // TODO: Do something Oo
             return new ExpressionNode();
         }
 
-        NumberNode NumberAbsolute(ExpressionNode input)
-            => new NumberNode(Math.Abs(decimal.Parse(ToNumber(input).NumericValue)));
+        NumberNode NumberAbsolute(ExpressionNode input, Context context)
+            => new NumberNode(Math.Abs(decimal.Parse(ToNumber(input, context).NumericValue)));
 
-        ExpressionNode IfExpression(ExpressionNode condition)
-            => new FunctionNode((ExpressionNode onTrue)
-                => new FunctionNode((ExpressionNode onFalse) => ToNumber(condition).NumericValue == "0" ? onFalse : onTrue)
+        ExpressionNode IfExpression(ExpressionNode condition, Context context)
+            => new FunctionNode((ExpressionNode onTrue, Context context_true)
+                => new FunctionNode((ExpressionNode onFalse, Context context_false)
+                    => ToNumber(condition, context).NumericValue == "0" ? onFalse : onTrue)
                 { Parameter = new VariableNode("on_false") })
             { Parameter = new VariableNode("on_true") };
 
-        ExpressionNode Set(ExpressionNode input)
-            => new FunctionNode((v) => interpreter.ChangeValue(input, v, input.Context))
+        ExpressionNode Set(ExpressionNode input, Context context)
+            => new FunctionNode((v, c) => interpreter.ChangeValue(input, v?.Clone(), context))
             { Parameter = new VariableNode("right") };
 
-        ExpressionNode Input(ExpressionNode type)
+        ExpressionNode Input(ExpressionNode type, Context context)
         {
             var data = new StringNode(Console.ReadLine());
             var result = interpreter.Run(type, data);
             return result;
         }
 
-        ExpressionNode Print(ExpressionNode node)
+        ExpressionNode Print(ExpressionNode node, Context context)
         {
             Console.WriteLine(node?.ToString() ?? "null");
             return node;
         }
 
-        NumberNode ToInt(ExpressionNode node)
+        NumberNode ToInt(ExpressionNode node, Context context)
         {
             if (int.TryParse(node.ToString(), out int value))
                 return new NumberNode(value.ToString(), false);
@@ -142,7 +143,7 @@ namespace FBL.Interpretation.Modules
             return new NumberNode("0", false);
         }
 
-        NumberNode ToNumber(ExpressionNode node)
+        NumberNode ToNumber(ExpressionNode node, Context context)
         {
             if (decimal.TryParse(node.ToString(), out decimal value))
                 return new NumberNode(value.ToString(), true);
@@ -150,19 +151,19 @@ namespace FBL.Interpretation.Modules
             return new NumberNode("0", false);
         }
 
-        StringNode ToString(ExpressionNode node) => new StringNode(node.ToString());
+        StringNode ToString(ExpressionNode node, Context context) => new StringNode(node.ToString());
 
 
-        ExpressionNode Add(ExpressionNode left)
+        ExpressionNode Add(ExpressionNode left, Context context)
         {
             return new FunctionNode(
-                (right) =>
+                (right, c) =>
                 {
                     if (left is NumberNode && right is NumberNode)
                     {
                         return new NumberNode(
-                              decimal.Parse(ToNumber(left).NumericValue)
-                            + decimal.Parse(ToNumber(right).NumericValue));
+                              decimal.Parse(ToNumber(left, c).NumericValue)
+                            + decimal.Parse(ToNumber(right, c).NumericValue));
                     }
 
                     return new StringNode(left.ToString() + right.ToString());
@@ -171,45 +172,45 @@ namespace FBL.Interpretation.Modules
             { Parameter = new VariableNode("right") };
         }
         
-        ExpressionNode NumbersSub(ExpressionNode left)
+        ExpressionNode NumbersSub(ExpressionNode left, Context context)
         {
             return new FunctionNode(
-                (right) => new NumberNode((
-                       decimal.Parse(ToNumber(left).NumericValue)
-                     - decimal.Parse(ToNumber(right).NumericValue)
+                (right, c) => new NumberNode((
+                       decimal.Parse(ToNumber(left, c).NumericValue)
+                     - decimal.Parse(ToNumber(right, c).NumericValue)
                     ).ToString(), true)
             )
             { Parameter = new VariableNode("right") };
         }
 
-        ExpressionNode NumbersMul(ExpressionNode left)
+        ExpressionNode NumbersMul(ExpressionNode left, Context context)
         {
             return new FunctionNode(
-                (right) => new NumberNode((
-                       decimal.Parse(ToNumber(left).NumericValue)
-                     * decimal.Parse(ToNumber(right).NumericValue)
+                (right, c) => new NumberNode((
+                       decimal.Parse(ToNumber(left, c).NumericValue)
+                     * decimal.Parse(ToNumber(right, c).NumericValue)
                     ).ToString(), true)
             )
             { Parameter = new VariableNode("right") };
         }
 
-        ExpressionNode NumbersDiv(ExpressionNode left)
+        ExpressionNode NumbersDiv(ExpressionNode left, Context context)
         {
             return new FunctionNode(
-                (right) => new NumberNode((
-                       decimal.Parse(ToNumber(left).NumericValue)
-                     / decimal.Parse(ToNumber(right).NumericValue)
+                (right, c) => new NumberNode((
+                       decimal.Parse(ToNumber(left, c).NumericValue)
+                     / decimal.Parse(ToNumber(right, c).NumericValue)
                     ).ToString(), true)
             )
             { Parameter = new VariableNode("right") };
         }
 
-        ExpressionNode NumbersMod(ExpressionNode left)
+        ExpressionNode NumbersMod(ExpressionNode left, Context context)
         {
             return new FunctionNode(
-                (right) => new NumberNode((
-                       decimal.Parse(ToNumber(left).NumericValue)
-                     % decimal.Parse(ToNumber(right).NumericValue)
+                (right, c) => new NumberNode((
+                       decimal.Parse(ToNumber(left, c).NumericValue)
+                     % decimal.Parse(ToNumber(right, c).NumericValue)
                     ).ToString(), true)
             )
             { Parameter = new VariableNode("right") };

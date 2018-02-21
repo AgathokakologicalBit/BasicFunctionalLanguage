@@ -22,7 +22,7 @@ namespace FBL.Parsing.Nodes
 
 
         public bool IsNative { get; set; }
-        public Func<ExpressionNode, ExpressionNode> Function { get; set; }
+        public Func<ExpressionNode, Context, ExpressionNode> Function { get; set; }
 
 
         public FunctionNode()
@@ -31,7 +31,7 @@ namespace FBL.Parsing.Nodes
             this.Value = this;
         }
 
-        public FunctionNode(Func<ExpressionNode, ExpressionNode> import)
+        public FunctionNode(Func<ExpressionNode, Context, ExpressionNode> import)
         {
             this.IsNative = true;
             this.Function = import;

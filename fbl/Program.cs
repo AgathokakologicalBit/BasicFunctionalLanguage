@@ -55,10 +55,18 @@ namespace FBL
             Console.WriteLine("\n\n===---  INTERPRETATION   ---===");
             var interpreter = new Interpreter();
             interpreter.AddModule(new LanguageModule());
-            interpreter.Run(ast);
 
-            Console.WriteLine("\n\n==--  RUN MAIN  --==");
-            interpreter.Run("main", new StringNode("world"));
+            try
+            {
+                interpreter.Run(ast);
+
+                Console.WriteLine("\n\n===---   RUN MAIN   ---===");
+                interpreter.Run("main", new StringNode("world"));
+            } catch (Exception e)
+            {
+                Console.WriteLine("===---   ERROR OCCURED   ---===");
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
