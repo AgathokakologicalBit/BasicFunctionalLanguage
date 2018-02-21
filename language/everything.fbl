@@ -1,0 +1,105 @@
+` Boolean stuff
+: ( set true  [ a ] [ b ] a )
+: ( set false [ a ] [ b ] b )
+
+: ( set __if if ) ` We don't need the standard if anymore
+` Gives nothing... But enhances readability
+: ( set if [ condition ] [ on_true ] [ on_false ] condition on_true on_false )
+
+: ( set bool [ value ] __if value true false ) ` Converts anything to boolean
+: ( set bti [ value ] value 1 0 )              ` Converts booleans to integer
+
+
+` Boolean logic
+: ( set not [ a ] a false true )
+
+: ( set and [ a ] [ b ] a b a )
+: ( set or  [ a ] [ b ] a a b )
+: ( set xor [ a ] [ b ] a (not b) b )
+
+
+
+` Utility functions
+: ( set void [ --- ] void ) ` Just returns itself. Used to destroy ~~the world~~ arguments
+: ( set run [ function ] function void ) ` A convinient method to run procedures (instead of passing void).
+: ( set id [ value ] value ) ` Nothing special... returns the passed value
+` Repeats the function given amount of times using composition
+: ( set power [ _power ] [ function ] [ value ] run (
+    __if _power
+        ([ --- ] function (power (- _power 1) function value))
+        ([ --- ] value)
+))
+
+
+
+` Working with numbers
+: ( set is_positive [ number ] bool (+ number (abs number)) )
+: ( set is_negative [ number ] bool (- number (abs number)) )
+: ( set is_zero     [ number ] not (bool number) )
+: ( set sign        [ number ] - (bti (is_positive number)) (bti (is_negative number)) )
+
+: ( set is_greater  [ a ] [ b ] is_positive (- a b) )
+: ( set is_less     [ a ] [ b ] is_negative (- a b) )
+: ( set is_equal    [ a ] [ b ] is_zero     (- a b) )
+
+
+` Structures
+` Array
+`
+` arguments passed to the getter:
+` [ is_empty ] [ value ] [ tail ]
+: ( set array_new [ getter ]
+    getter true void void
+)
+: ( set array_add [ value ] [ array ] [ getter ]
+    getter false value array
+)
+: ( set array_top [ array ]
+    array ([ empty ] [ value ] [ rest ] value)
+)
+: ( set array_rest [ array ]
+    array ([ empty ] [ value ] [ rest ] rest )
+)
+: ( set array_is_empty [ array ]
+    array ([ empty ] [ --- ] [ --- ] empty)
+)
+: ( set array_len [ array ] run (
+    if (array_is_empty array)
+        ([ --- ] 0)
+        ([ --- ] + 1 (array_len (array_rest array)))
+))
+
+
+` Itertools for arrays
+: ( set map [ array ] [ function ] run (
+    if (array_is_empty array)
+        ([ --- ] array_new)
+        ([ --- ] array_add (function (array_top array)) (map (array_rest array) function))
+))
+: ( set foreach [ array ] [ function ] run (
+    if (array_is_empty array)
+        void
+        ([ --- ] function (array_top array) : foreach (array_rest array) function)
+))
+
+: ( set enumerate [ from ] [ to ] [ step ] run (
+    if (is_positive (* (sign (- to from)) (sign step)))
+        ([ --- ] array_add from (enumerate (+ from step) to step))
+        ([ --- ] array_new)
+))
+
+
+
+` Iteration tools
+: ( set loop [ times ] [ code ]
+    : ( set __loop [ from ] [ times ] [ code ]
+        : (__if times   code void) (- from times)
+        : (__if times __loop void) from (- times 1) code
+    )
+    : run (if (is_positive times) ([ --- ] __loop (int times) (int times) code) id)
+)
+
+
+: ( set while [ condition ] [ code ]
+    : run (if (run condition) ([ --- ] run code : while condition code) void)
+)
