@@ -26,8 +26,8 @@ namespace FBL.Tokenization.TokenParsing.ParsingModules
 
         private static bool IsMatching(char c, Tokenizer.State state)
         {
-            const string possible = "!@#$%^&*/_+~-=";
-            if (Char.IsLetterOrDigit(c) || possible.Contains(c))
+            const string possible = @"!?@#$%,^&|*/\_+~-<=>";
+            if (Char.IsLetter(c) || possible.Contains(c))
             {
                 if (c > 127)
                 {
@@ -37,7 +37,6 @@ namespace FBL.Tokenization.TokenParsing.ParsingModules
                     state.ErrorMessage =
                         "Identifier can contains only:\n" +
                         "  - latin letters\n" +
-                        "  - digits\n" +
                         $"  - '{possible}' symbols";
                 }
 
