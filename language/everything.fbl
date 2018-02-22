@@ -53,7 +53,7 @@
     array ([ empty ] [ value ] [ rest ] value)
 )
 : ( set "array_rest" [ array ]
-    array ([ empty ] [ value ] [ rest ] rest )
+    array ([ empty ] [ value ] [ rest ] rest)
 )
 : ( set "array_is_empty" [ array ]
     array ([ empty ] [ --- ] [ --- ] empty)
@@ -71,6 +71,13 @@
         ([ --- ] array_new)
         ([ --- ] array_add (function (array_top array)) (map (array_rest array) function))
 ))
+
+: ( set "reduce" [ array ] [ accumulator ] [ function ] run (
+    if (array_is_empty array)
+        ([ --- ] accumulator)
+        ([ --- ] function (reduce (array_rest array) accumulator function) (array_top array))
+))
+
 : ( set "foreach" [ array ] [ function ] run (
     if (array_is_empty array)
         void

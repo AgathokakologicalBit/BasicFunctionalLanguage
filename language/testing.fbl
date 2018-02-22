@@ -1,0 +1,32 @@
+: include "everything.fbl"
+
+
+` Declaring counters in global scope
+`  so 'assert_equals' can access them
+: set "_$tests_total"  void
+: set "_$tests_passed" void
+
+
+` Tests wrappers
+: ( set "test" [ title ] [ code ]
+    : print (+ (+ "\n===---   " title) "   ---===")
+
+    : set "_$tests_total"  0
+    : set "_$tests_passed" 0
+    : run code
+    : print (+ (+ (+ "\nTests passed: " _$tests_passed) " / ") _$tests_total)
+)
+
+: ( set "describe" [ title ] [ code ]
+    : print (+ "Testing #" title)
+    : run code
+)
+
+
+` Main testing functions
+: ( set "assert_equals" [ expected ] [ actual ] [ message ] run (
+    : set "_$tests_total" (+ _$tests_total 1)
+    : if (not (equals expected actual))
+        ([ --- ] print (+ (+ (+ (+ (+ "FAILED...\n  Expected " expected) " but got ") actual) "\n  Message: ") message))
+        ([ --- ] print (+ "  passed - " message) : set "_$tests_passed" (+ _$tests_passed 1))
+) )
