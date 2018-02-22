@@ -1,5 +1,6 @@
 ﻿using FBL.Parsing.Nodes;
 using System;
+using System.Linq;
 
 namespace FBL.Interpretation.Modules
 {
@@ -84,11 +85,22 @@ namespace FBL.Interpretation.Modules
                 new FunctionNode(NumbersMod) { Parameter = new VariableNode("left") },
                 context
             );
-            
+
             interpreter.SetVariable(
                 "if",
                 new FunctionNode(IfExpression)
                 { Parameter = new VariableNode("condition") },
+                context
+            );
+            interpreter.SetVariable(
+                "equals",
+                new FunctionNode(
+                    (a, c1) => new FunctionNode(
+                        (b, c2) =>
+                            new NumberNode(a.GetType() == b.GetType() && a.ToString() == b.ToString() ? 1 : 0)
+                    )
+                    { Parameter = new VariableNode("right") })
+                { Parameter = new VariableNode("left") },
                 context
             );
         }
@@ -110,7 +122,9 @@ namespace FBL.Interpretation.Modules
             { Parameter = new VariableNode("on_true") };
 
         ExpressionNode Set(ExpressionNode input, Context context)
-            => new FunctionNode((v, c) => interpreter.ChangeValue(input, v?.Clone(), context))
+            => new FunctionNode(
+                (v, c) => interpreter.SetVariable(ToString(input, context).StringValue, v?.Clone(), context)
+            )
             { Parameter = new VariableNode("right") };
 
         ExpressionNode Input(ExpressionNode type, Context context)
@@ -128,10 +142,15 @@ namespace FBL.Interpretation.Modules
 
         NumberNode ToInt(ExpressionNode node, Context context)
         {
-            if (int.TryParse(node.ToString(), out int value))
+            if (int.TryParse(GetLeadingInt(node.ToString()), out int value))
                 return new NumberNode(value.ToString(), false);
 
             return new NumberNode("0", false);
+        }
+
+        static string GetLeadingInt(string input)
+        {
+            return new string(input.Trim().TakeWhile(Char.IsDigit).ToArray());
         }
 
         NumberNode ToNumber(ExpressionNode node, Context context)
@@ -162,7 +181,7 @@ namespace FBL.Interpretation.Modules
             )
             { Parameter = new VariableNode("right") };
         }
-        
+
         ExpressionNode NumbersSub(ExpressionNode left, Context context)
         {
             return new FunctionNode(

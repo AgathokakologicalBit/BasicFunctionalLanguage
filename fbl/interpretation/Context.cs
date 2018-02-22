@@ -17,7 +17,7 @@ namespace FBL.Interpretation
 
         public override string ToString()
         {
-            return string.Join("\n", Values.Select(v => $" >> {v.Key}\n<< {v.Value}"));
+            return string.Join("\n", Values.Select(v => $" >> {v.Key}\n<< {v.Value}\n===---   PARENT   ---===\n{Parent}"));
         }
     }
 }

@@ -53,30 +53,22 @@ namespace FBL.Interpretation
             loadedModules.Add(module);
         }
 
-        public void SetVariable(string name, ExpressionNode value, Context context)
+        public ExpressionNode SetVariable(string name, ExpressionNode value, Context context)
         {
-            context.Values.Add(name, value);
-        }
-
-        public ExpressionNode ChangeValue(ExpressionNode from, ExpressionNode to, Context context)
-        {
-            if (context == null) return null;
+            if (context == null) return new ExpressionNode();
 
             var ctx = context;
             while (ctx != null)
             {
                 foreach (var v in ctx.Values)
-                {
-                    if (v.Value.Value == from)
-                    {
-                        ctx.Values[v.Key] = to;
-                        return to;
-                    }
-                }
+                    if (v.Key == name)
+                        return ctx.Values[v.Key] = value;
+
                 ctx = ctx.Parent;
             }
 
-            return new ExpressionNode();
+            context.Values.Add(name, value);
+            return value;
         }
 
         public Context GetGlobalContext() => globalContext;
@@ -110,10 +102,10 @@ namespace FBL.Interpretation
         private ExpressionNode Evaluate(BlockNode node, Context context)
         {
             ExpressionNode result = new ExpressionNode() { Context = context };
-            
+
             foreach (var exp in node.Code)
                 result = Evaluate((dynamic)exp, context);
-            
+
             return result;
         }
 
