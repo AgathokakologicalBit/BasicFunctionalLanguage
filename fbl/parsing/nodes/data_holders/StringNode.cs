@@ -1,12 +1,28 @@
-﻿namespace FBL.Parsing.Nodes
+﻿using System.Text.RegularExpressions;
+
+namespace FBL.Parsing.Nodes
 {
     public class StringNode : ExpressionNode
     {
+        private static Regex regexEscaper = new Regex(@"\\(.)", RegexOptions.Compiled);
+
         public string StringValue { get; set; }
 
         public StringNode(string value)
         {
-            StringValue = value;
+            string EscapeCharacter(Match m)
+            {
+                string character = m.Groups[1].Value;
+                switch (character[0])
+                {
+                    case 'n': return "\n";
+                    case 't': return "\t";
+                    case 's': return " ";
+                    default: return character.ToString();
+                }
+            }
+
+            StringValue = regexEscaper.Replace(value, EscapeCharacter);
             Value = this;
         }
 

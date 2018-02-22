@@ -1,5 +1,9 @@
-﻿using FBL.Parsing.Nodes;
+﻿using FBL.Parsing;
+using FBL.Parsing.Nodes;
+using FBL.Tokenization;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace FBL.Interpretation.Modules
@@ -7,6 +11,8 @@ namespace FBL.Interpretation.Modules
     public class LanguageModule : IModule
     {
         private Interpreter interpreter;
+        private HashSet<string> includedFiles = new HashSet<string>();
+
 
         void IModule.OnLoad(Interpreter interpreter)
         {
@@ -19,8 +25,18 @@ namespace FBL.Interpretation.Modules
                 context
             );
             interpreter.SetVariable(
+                "include",
+                new FunctionNode(Include) { Parameter = new VariableNode("filename") },
+                context
+            );
+            interpreter.SetVariable(
                 "set",
                 new FunctionNode(Set) { Parameter = new VariableNode("name") },
+                context
+            );
+            interpreter.SetVariable(
+                "get",
+                new FunctionNode(Get) { Parameter = new VariableNode("name") },
                 context
             );
 
@@ -96,8 +112,7 @@ namespace FBL.Interpretation.Modules
                 "equals",
                 new FunctionNode(
                     (a, c1) => new FunctionNode(
-                        (b, c2) =>
-                            new NumberNode(a.GetType() == b.GetType() && a.ToString() == b.ToString() ? 1 : 0)
+                        (b, c2) => new NumberNode(a.GetType() == b.GetType() && a.ToString() == b.ToString() ? 1 : 0)
                     )
                     { Parameter = new VariableNode("right") })
                 { Parameter = new VariableNode("left") },
@@ -109,6 +124,23 @@ namespace FBL.Interpretation.Modules
         {
             // TODO: Do something Oo
             return new ExpressionNode();
+        }
+
+        ExpressionNode Include(ExpressionNode input, Context context)
+        {
+            var path = Path.GetFullPath(ToString(input, context).StringValue);
+            if (!File.Exists(path)) return new ExpressionNode();
+
+            if (includedFiles.Contains(path))
+                return new ExpressionNode();
+
+            includedFiles.Add(path);
+
+            var code = File.ReadAllText(path);
+            var tokenizer = new Tokenizer(code, new TokenizerOptions { SkipWhitespace = true });
+            var ast = Parser.Parse(tokenizer.Tokenize());
+
+            return interpreter.Run(ast);
         }
 
         NumberNode NumberAbsolute(ExpressionNode input, Context context)
@@ -126,6 +158,9 @@ namespace FBL.Interpretation.Modules
                 (v, c) => interpreter.SetVariable(ToString(input, context).StringValue, v?.Clone(), context)
             )
             { Parameter = new VariableNode("right") };
+
+        ExpressionNode Get(ExpressionNode input, Context context)
+            => interpreter.GetVariable(ToString(input, context).StringValue, context);
 
         ExpressionNode Input(ExpressionNode type, Context context)
         {

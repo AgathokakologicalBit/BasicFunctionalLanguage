@@ -60,9 +60,8 @@ namespace FBL.Interpretation
             var ctx = context;
             while (ctx != null)
             {
-                foreach (var v in ctx.Values)
-                    if (v.Key == name)
-                        return ctx.Values[v.Key] = value;
+                if (ctx.Values.ContainsKey(name))
+                    return ctx.Values[name] = value;
 
                 ctx = ctx.Parent;
             }
@@ -70,6 +69,20 @@ namespace FBL.Interpretation
             context.Values.Add(name, value);
             return value;
         }
+        public ExpressionNode GetVariable(string name, Context context)
+        {
+            var ctx = context;
+            while (ctx != null)
+            {
+                if (ctx.Values.ContainsKey(name))
+                    return ctx.Values[name];
+
+                ctx = ctx.Parent;
+            }
+
+            return new ExpressionNode();
+        }
+
 
         public Context GetGlobalContext() => globalContext;
 
