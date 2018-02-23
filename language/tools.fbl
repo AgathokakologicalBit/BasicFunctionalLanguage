@@ -1,11 +1,7 @@
-: ( set "__equals" equals )
-: ( set "equals" [ left ] [ right ] __if (__equals left right) true false )
+: include "core.fbl"
 
-: ( set "true"  [ first ] [ second ] first )
-: ( set "false" [ first ] [ second ] second )
-: ( set "__if" if )
-: ( set "if" [ condition ] [ on_true ] [ on_false ] condition on_true on_false )
 
+` Convertion tools
 : ( set "bool" [ value ] __if value true false )
 : ( set "bti" [ value ] value 1 0 )
 
@@ -19,8 +15,6 @@
 
 
 ` Utility functions
-: ( set "void" [ --- ] void )
-: ( set "run" [ function ] function void )
 : ( set "id" [ value ] value )
 : ( set "power" [ _power ] [ function ] [ value ] run (
     __if _power

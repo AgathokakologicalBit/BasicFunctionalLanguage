@@ -1,4 +1,5 @@
-: include "everything.fbl"
+: include "core.fbl"
+: include "tools.fbl"
 
 
 ` Declaring counters in global scope
@@ -9,16 +10,16 @@
 
 ` Tests wrappers
 : ( set "test" [ title ] [ code ]
-    : print (+ (+ "\n===---   " title) "   ---===")
+    : puts "\n===---   " title "   ---===\n"
 
     : set "_$tests_total"  0
     : set "_$tests_passed" 0
     : run code
-    : print (+ (+ (+ "\nTests passed: " _$tests_passed) " / ") _$tests_total)
+    : puts "\nTests passed: " _$tests_passed " / " _$tests_total "\n"
 )
 
 : ( set "describe" [ title ] [ code ]
-    : print (+ "Testing #" title)
+    : puts "\nTesting #" title "\n"
     : run code
 )
 
@@ -27,6 +28,6 @@
 : ( set "assert_equals" [ expected ] [ actual ] [ message ] run (
     : set "_$tests_total" (+ _$tests_total 1)
     : if (not (equals expected actual))
-        ([ --- ] print (+ (+ (+ (+ (+ "FAILED...\n  Expected " expected) " but got ") actual) "\n  Message: ") message))
-        ([ --- ] print (+ "  passed - " message) : set "_$tests_passed" (+ _$tests_passed 1))
+        ([ --- ] puts "  FAILED...\n    Expected " expected " but got " actual "\n    Message: " message "\n")
+        ([ --- ] puts "  passed - " message "\n" : set "_$tests_passed" (+ _$tests_passed 1))
 ) )

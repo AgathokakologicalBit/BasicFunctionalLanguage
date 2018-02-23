@@ -1,4 +1,5 @@
-: include "everything.fbl"
+: include "core.fbl"
+: include "tools.fbl"
 : include "testing.fbl"
 
 
@@ -25,13 +26,13 @@
 : (set "main" [ args ]
     : test "functions" ([ --- ]
         : describe "context_parent" ([ --- ]
-            : assert_equals    (42) (context_parent    42)  "should return the input"
-            : assert_equals ("foo") (context_parent "foo")  "should return the input"
-            : assert_equals  (test) (context_parent  test)  "should return the input"
+            : assert_equals    (42) (context_parent    42)  "return integer (42)"
+            : assert_equals ("foo") (context_parent "foo")  "return string  (foo)"
+            : assert_equals  (test) (context_parent  test)  "return function(test)"
             :
-            : assert_equals (void) (context_parent_global    42)  "should NOT return the input"
-            : assert_equals (void) (context_parent_global "foo")  "should NOT return the input"
-            : assert_equals (void) (context_parent_global  test)  "should NOT return the input"
+            : assert_equals (void) (context_parent_global    42)  "return void (ignore integer (42))"
+            : assert_equals (void) (context_parent_global "foo")  "return void (ignore string  (foo))"
+            : assert_equals (void) (context_parent_global  test)  "return void (ignore function(test))"
         )
         : describe "factorial" ([ --- ]
             : assert_equals      (1) (factorial 0) "0! == 1"
@@ -51,12 +52,11 @@
             : assert_equals  3 (% 17 7) "17 % 7 == 3"
         )
         : describe "convertion" ([ --- ]
-            : assert_equals 10 (int "10")      "should convert string to integer"
-            : assert_equals 10 (int "10.5")    "should convert string with trailing symbols to integer"
-            : assert_equals 10 (int 10.5)      "should convert decimal numbers to integers"
-            ` TODO: Add '.' as a separator
-            ` : assert_equals 10.5 (number "10.5") "should convert string to decimal number"
-            : assert_equals "1" (string 1)     "should convert numbers to string"
+            : assert_equals 10   (int "10")       "convert string to integer"
+            : assert_equals 10   (int "10.5")     "convert string with trailing symbols to integer"
+            : assert_equals 10   (int 10.5)       "convert decimal numbers to integers"
+            : assert_equals 10.5 (number "10.5")  "convert string to decimal number"
+            : assert_equals "1"  (string 1)       "convert numbers to string"
         )
     )
     : test "std" ([ --- ]
