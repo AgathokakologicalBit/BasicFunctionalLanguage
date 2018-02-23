@@ -17,7 +17,7 @@
 
 ` Utility functions
 : ( set "id" [ value ] value )
-: ( set "comp" [ f ] [ g ] [ arg ] f ( g arg ))
+: ( set "compose" [ f ] [ g ] [ arg ] f ( g arg ))
 : ( set "@" comp )
 : ( set "swp" [ a ] [ b ] [ func ] func b a )
 : ( set "power" [ _power ] [ function ] [ value ] run (
