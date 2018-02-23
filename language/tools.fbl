@@ -65,22 +65,22 @@
 
 
 ` Itertools for arrays
-: ( set "map" [ array ] [ function ] run (
+: ( set "map" [ function ] [ array ] run (
     if (array_is_empty array)
         ([ --- ] array_new)
-        ([ --- ] array_add (function (array_top array)) (map (array_rest array) function))
+        ([ --- ] array_add (function (array_top array)) (map function (array_rest array)))
 ))
 
-: ( set "reduce" [ array ] [ accumulator ] [ function ] run (
+: ( set "reduce" [ function ] [ accumulator ] [ array ] run (
     if (array_is_empty array)
         ([ --- ] accumulator)
-        ([ --- ] function (reduce (array_rest array) accumulator function) (array_top array))
+        ([ --- ] function (reduce function accumulator (array_rest array)) (array_top array))
 ))
 
-: ( set "foreach" [ array ] [ function ] run (
+: ( set "foreach" [ function ] [ array ] run (
     if (array_is_empty array)
         void
-        ([ --- ] function (array_top array) : foreach (array_rest array) function)
+        ([ --- ] function (array_top array) : foreach function (array_rest array))
 ))
 
 : ( set "enumerate" [ from ] [ to ] [ step ] run (
