@@ -1,6 +1,6 @@
 : include "tools.fbl"
 
-: (set "pair" [ a ] [ b ] 
+: (set "Pair" [ a ] [ b ] 
     [ getter ] getter a b
 )
 
