@@ -4,6 +4,7 @@
 ` Convertion tools
 : ( set "bool" [ value ] __if value true false )
 : ( set "bti" [ value ] value 1 0 )
+: ( set "bts" [ value ] value "true" "false" )
 
 
 ` Boolean logic
@@ -16,13 +17,17 @@
 
 ` Utility functions
 : ( set "id" [ value ] value )
+: ( set "compose" [ f ] [ g ] [ arg ] f ( g arg ))
+: ( set "@" compose )
+: ( set "swp" [ a ] [ b ] [ func ] func b a )
 : ( set "power" [ _power ] [ function ] [ value ] run (
     __if _power
         ([ --- ] function (power (- _power 1) function value))
         ([ --- ] value)
 ))
 
-
+` Printing
+: ( set "pbool" [ value ] print (bts value) )
 
 ` Working with numbers
 : ( set "is_positive" [ number ] bool (+ number (abs number)) )
