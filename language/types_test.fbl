@@ -1,0 +1,31 @@
+: include "core.fbl"
+: include "tools.fbl"
+: include "types.fbl"
+
+: ( set "main" [ args ]
+    : set "Car" (Type "Car" ([ properties ] [ set ]
+        : set "max_speed" 100  ` miles per hour
+        : set "wheels" 4
+    ))
+
+    : set "my_car" (default Car)
+
+    : puts "Car's max speed is " (my_car "max_speed") "\n"
+    : puts "My car has "         (my_car "wheels")    " wheels!\n"
+
+    : puts "Getting undefined property: " (my_car "fly") "\n"
+
+    : print "Modifying the car! We need moarrr speed!111"
+
+    ` <<  operator pushes new value to the car
+    ` new speed is 140 miles per hour!
+    : my_car << "max_speed" 140  
+
+    ` Let's see our speed again!
+    : puts "Car's max speed is " (my_car "max_speed") "\n"
+
+
+    : set "my_second_car" (default Car)
+    : puts "second car's max speed is " (my_second_car "max_speed") "\n"
+    : puts "first car's max speed is " (my_car "max_speed") "\n"
+)

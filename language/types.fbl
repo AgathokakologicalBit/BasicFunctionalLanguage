@@ -1,0 +1,29 @@
+: include "core.fbl"
+
+: ( set "default" [ type ] type void )
+: ( set "<<" "<<" )
+: ( set ">>" ">>" )
+
+
+: ( set "Type" [ name ] [ constructor ]
+    ` We should return the type instantiator (object constructor)
+    ([ properties ]
+        : set "__$type_set" set
+        : set "__$type_get" get
+
+        : set "__$type_set_u" ( [ name ] __$type_set (+ "__$type_var_" name ) )
+        : set "__$type_get_u" ( [ name ] __$type_get (+ "__$type_var_" name ) )
+
+        : (([ object ] constructor properties (object "<<") : object)
+            ([ action ] run (
+                (if (equals action "<<")
+                    ([ --- ] __$type_set_u)
+                    (if (equals action ">>")
+                        ([ --- ] __$type_get_u)
+                        ([ --- ] __$type_get_u action)
+                    )
+                )
+            ))
+        )
+    )
+)

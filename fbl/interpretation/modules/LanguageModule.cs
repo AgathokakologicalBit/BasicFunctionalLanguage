@@ -32,16 +32,6 @@ namespace FBL.Interpretation.Modules
                 new FunctionNode(Include) { Parameter = new VariableNode("filename") },
                 context
             );
-            interpreter.SetVariable(
-                "set",
-                new FunctionNode(Set) { Parameter = new VariableNode("name") },
-                context
-            );
-            interpreter.SetVariable(
-                "get",
-                new FunctionNode(Get) { Parameter = new VariableNode("name") },
-                context
-            );
 
             // TODO: Temporary
             interpreter.SetVariable(
@@ -161,15 +151,6 @@ namespace FBL.Interpretation.Modules
                 { Parameter = new VariableNode("on_false") })
             { Parameter = new VariableNode("on_true") };
 
-        ExpressionNode Set(ExpressionNode input, Context context)
-            => new FunctionNode(
-                (v, c) => interpreter.SetVariable(ToString(input, context).StringValue, v?.Clone(), context)
-            )
-            { Parameter = new VariableNode("right") };
-
-        ExpressionNode Get(ExpressionNode input, Context context)
-            => interpreter.GetVariable(ToString(input, context).StringValue, context);
-
         ExpressionNode Input(ExpressionNode type, Context context)
         {
             var data = new StringNode(Console.ReadLine());
@@ -189,7 +170,7 @@ namespace FBL.Interpretation.Modules
             return PutsFunctionNode;
         }
 
-        NumberNode ToInt(ExpressionNode node, Context context)
+        public static NumberNode ToInt(ExpressionNode node, Context context)
         {
             if (int.TryParse(GetLeadingInt(node.ToString()), NumberStyles.Number, CultureInfo.InvariantCulture, out int value))
                 return new NumberNode(value.ToString(CultureInfo.InvariantCulture), false);
@@ -200,7 +181,7 @@ namespace FBL.Interpretation.Modules
         static string GetLeadingInt(string input)
             => new string(input.Trim().TakeWhile((c) => Char.IsDigit(c)).ToArray());
 
-        NumberNode ToNumber(ExpressionNode node, Context context)
+        public static NumberNode ToNumber(ExpressionNode node, Context context)
         {
             if (decimal.TryParse(node.ToString(), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
                 return new NumberNode(value.ToString(CultureInfo.InvariantCulture), true);
@@ -208,7 +189,8 @@ namespace FBL.Interpretation.Modules
             return new NumberNode("0", false);
         }
 
-        StringNode ToString(ExpressionNode node, Context context) => new StringNode(node.ToString());
+        public static StringNode ToString(ExpressionNode node, Context context)
+            => new StringNode(node.ToString());
 
 
         ExpressionNode Add(ExpressionNode left, Context context)
