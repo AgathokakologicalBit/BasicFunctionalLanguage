@@ -3,6 +3,7 @@ using FBL.Parsing.Nodes;
 using FBL.Tokenization;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -12,6 +13,8 @@ namespace FBL.Interpretation.Modules
     {
         private Interpreter interpreter;
         private HashSet<string> includedFiles = new HashSet<string>();
+
+        private FunctionNode PutsFunctionNode = null;
 
 
         void IModule.OnLoad(Interpreter interpreter)
@@ -49,6 +52,11 @@ namespace FBL.Interpretation.Modules
             interpreter.SetVariable(
                 "print",
                 new FunctionNode(Print) { Parameter = new VariableNode("value") },
+                context
+            );
+            interpreter.SetVariable(
+                "puts",
+                PutsFunctionNode = new FunctionNode(Puts) { Parameter = new VariableNode("value") },
                 context
             );
 
@@ -175,23 +183,27 @@ namespace FBL.Interpretation.Modules
             return node;
         }
 
+        ExpressionNode Puts(ExpressionNode node, Context context)
+        {
+            Console.Write(node?.ToString() ?? String.Empty);
+            return PutsFunctionNode;
+        }
+
         NumberNode ToInt(ExpressionNode node, Context context)
         {
-            if (int.TryParse(GetLeadingInt(node.ToString()), out int value))
-                return new NumberNode(value.ToString(), false);
+            if (int.TryParse(GetLeadingInt(node.ToString()), NumberStyles.Number, CultureInfo.InvariantCulture, out int value))
+                return new NumberNode(value.ToString(CultureInfo.InvariantCulture), false);
 
             return new NumberNode("0", false);
         }
 
         static string GetLeadingInt(string input)
-        {
-            return new string(input.Trim().TakeWhile(Char.IsDigit).ToArray());
-        }
+            => new string(input.Trim().TakeWhile((c) => Char.IsDigit(c)).ToArray());
 
         NumberNode ToNumber(ExpressionNode node, Context context)
         {
-            if (decimal.TryParse(node.ToString(), out decimal value))
-                return new NumberNode(value.ToString(), true);
+            if (decimal.TryParse(node.ToString(), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal value))
+                return new NumberNode(value.ToString(CultureInfo.InvariantCulture), true);
 
             return new NumberNode("0", false);
         }

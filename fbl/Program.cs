@@ -40,7 +40,7 @@ namespace FBL
             Console.WriteLine("\n===---        STATS        ---===");
 
             Console.WriteLine($" [T] Tokens count: {tokens.Length}");
-            
+
             var ast = Parser.Parse(tokens);
             if (ast == null)
             {
@@ -49,7 +49,7 @@ namespace FBL
             }
 
             Console.WriteLine("\n\n===---        AST        ---===");
-            Console.WriteLine(ast?.ToString());
+            Console.WriteLine(ast.ToString());
 
 
             Console.WriteLine("\n\n===---  INTERPRETATION   ---===");
@@ -62,7 +62,8 @@ namespace FBL
 
                 Console.WriteLine("\n\n===---   RUN MAIN   ---===");
                 interpreter.Run("main", new StringNode("world"));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("===---   ERROR OCCURED   ---===");
                 Console.WriteLine(e.Message);

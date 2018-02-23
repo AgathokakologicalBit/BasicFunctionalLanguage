@@ -1,4 +1,6 @@
-﻿namespace FBL.Parsing.Nodes
+﻿using System.Globalization;
+
+namespace FBL.Parsing.Nodes
 {
     public class NumberNode : ExpressionNode
     {
@@ -17,7 +19,7 @@
 
         public NumberNode(decimal value)
         {
-            NumericValue = value.ToString();
+            NumericValue = value.ToString(CultureInfo.InvariantCulture);
             IsDecimal = true;
 
             Value = this;
