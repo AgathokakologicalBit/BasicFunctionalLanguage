@@ -1,0 +1,33 @@
+: include "tools.fbl"
+
+: (set "Just" [ value ] 
+	[ getter ] getter value
+)
+
+: (set "Nothing" void )
+
+: (set "from_just" [ mb ]
+	mb ([ value ] value)
+)
+
+: (set "is_nothing" [ mb ]
+	equals mb Nothing
+)
+
+: (set "is_just" [ mb ]
+	not (is_nothing mb)
+)
+
+: (set "maybe" [ default ] [ transform ] [ mb ]
+	if (is_just mb)
+		(mb transform)
+		default
+)
+
+: (set "from_maybe" [ default ] [ mb ]
+	maybe default id mb
+)
+
+: (set ">>=" [ transform ] [ mb ]
+	maybe Nothing (comp Just transform) mb
+)
