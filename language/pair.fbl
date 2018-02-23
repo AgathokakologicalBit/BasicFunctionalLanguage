@@ -1,9 +1,5 @@
 : include "tools.fbl"
 
-: (set "swp" [ a ] [ b ] [ func ]
-    func b a
-)
-
 : (set "pair" [ a ] [ b ] 
     [ getter ] getter a b
 )
@@ -30,18 +26,4 @@
 
 : (set "ppair" [ pr ] 
     puts "(" (fst pr) ", " (scd pr) ")\n"
-)
-
-: (set "main" [ args ] 
-    : (set "a" (pair 42 1337))
-    : ppair a
-    : ppair (pair_swp a)
-
-    : (set "pair_add" [ pr ]
-        pr +
-    )
-
-    : print (pair_add a)
-    : print ((curry pair_add) 5 88)
-    : print ((uncurry +) a) ` Same as "a +"
 )
