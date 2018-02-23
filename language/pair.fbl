@@ -1,0 +1,29 @@
+: include "tools.fbl"
+
+: (set "Pair" [ a ] [ b ] 
+    [ getter ] getter a b
+)
+
+: (set "fst" [ pr ] 
+    pr ([ a ] [ _ ] a)
+)
+
+: (set "scd" [ pr ] 
+    pr ([ _ ] [ b ] b)
+)
+
+: (set "curry" [ func ]
+    [ a ] [ b ] func (pair a b)
+)
+
+: (set "uncurry" [ func ]
+    ([ pr ] pr func )
+)
+
+: (set "pair_swp" [ pr ]
+    (pr swp) pair
+)
+
+: (set "ppair" [ pr ] 
+    puts "(" (fst pr) ", " (scd pr) ")\n"
+)
