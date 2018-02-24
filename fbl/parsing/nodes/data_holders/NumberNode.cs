@@ -34,5 +34,14 @@ namespace FBL.Parsing.Nodes
         {
             return new NumberNode(NumericValue, IsDecimal);
         }
+
+        public override bool DeepEquals(ExpressionNode b, long visitId)
+        {
+            if (this == b) return true;
+            if (b is NumberNode bn)
+                return NumericValue == bn.NumericValue;
+
+            return false;
+        }
     }
 }

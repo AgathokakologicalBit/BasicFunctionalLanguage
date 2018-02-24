@@ -1,4 +1,5 @@
-﻿using FBL.Interpretation;
+﻿using System;
+using FBL.Interpretation;
 
 namespace FBL.Parsing.Nodes
 {
@@ -22,6 +23,11 @@ namespace FBL.Parsing.Nodes
         public override string ToString()
         {
             return "null";
+        }
+
+        public virtual bool DeepEquals(ExpressionNode b, long visitId)
+        {
+            return this == b;
         }
     }
 }

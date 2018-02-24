@@ -15,6 +15,7 @@ namespace FBL.Interpretation.Modules
         private HashSet<string> includedFiles = new HashSet<string>();
 
         private FunctionNode PutsFunctionNode = null;
+        private long NextVisitId = 0;
 
 
         void IModule.OnLoad(Interpreter interpreter)
@@ -110,7 +111,7 @@ namespace FBL.Interpretation.Modules
                 "equals",
                 new FunctionNode(
                     (a, c1) => new FunctionNode(
-                        (b, c2) => new NumberNode(a.GetType() == b.GetType() && a.ToString() == b.ToString() ? 1 : 0)
+                        (b, c2) => new NumberNode(a.DeepEquals(b, NextVisitId++) ? 1 : 0)
                     )
                     { Parameter = new VariableNode("right") })
                 { Parameter = new VariableNode("left") },

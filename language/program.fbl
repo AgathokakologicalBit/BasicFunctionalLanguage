@@ -2,82 +2,16 @@
 : include "tools.fbl"
 : include "testing.fbl"
 
-
-` Functions for recursion tests 
-: ( set "factorial" [ n ] run (
-    if (equals n 0)
-        ([ --- ] 1)
-        ([ --- ] * n (factorial (- n 1)))
-) )
-
-` Functions for context tests
-: ( set "value" void )
-: ( set "return_from_global" ([ --- ] value) )
-: ( set "context_parent" [ value ]
-    : set "return_from_context" ([ --- ] value)
-    : run return_from_context
-)
-: ( set "context_parent_global" [ value ]
-    : run return_from_global
-)
+: include "tests/language_test.fbl"
+: include "tests/std_test.fbl"
+: include "tests/types_test.fbl"
 
 
-` Code of the main function
 : (set "main" [ args ]
-    : test "functions" ([ --- ]
-        : describe "context_parent" ([ --- ]
-            : assert_equals    (42) (context_parent    42)  "return integer (42)"
-            : assert_equals ("foo") (context_parent "foo")  "return string  (foo)"
-            : assert_equals  (test) (context_parent  test)  "return function(test)"
-            :
-            : assert_equals (void) (context_parent_global    42)  "return void (ignore integer (42))"
-            : assert_equals (void) (context_parent_global "foo")  "return void (ignore string  (foo))"
-            : assert_equals (void) (context_parent_global  test)  "return void (ignore function(test))"
-        )
-        : describe "factorial" ([ --- ]
-            : assert_equals      (1) (factorial 0) "0! == 1"
-            : assert_equals      (1) (factorial 1) "1! == 1"
-            : assert_equals      (6) (factorial 3) "3! == 6"
-            : assert_equals    (120) (factorial 5) "5! == 120"
-            : assert_equals (362880) (factorial 9) "9! == 362880"
-        )
-    )
-    : test "built-ins" ([ --- ]
-        : describe "math" ([ --- ]
-            : assert_equals 10 (+ 0 10) "0 + 10 == 10"
-            : assert_equals 10 (+ 3  7) "3 + 7 == 10"
-            : assert_equals  3 (- 10 7) "10 - 7 == 3"
-            : assert_equals 12 (* 3  4) "3 * 4 == 12"
-            : assert_equals  4 (/ 12 3) "12 / 3 == 4"
-            : assert_equals  3 (% 17 7) "17 % 7 == 3"
-        )
-        : describe "convertion" ([ --- ]
-            : assert_equals 10   (int "10")       "convert string to integer"
-            : assert_equals 10   (int "10.5")     "convert string with trailing symbols to integer"
-            : assert_equals 10   (int 10.5)       "convert decimal numbers to integers"
-            : assert_equals 10.5 (number "10.5")  "convert string to decimal number"
-            : assert_equals "1"  (string 1)       "convert numbers to string"
-        )
-    )
-    : test "std" ([ --- ]
-        : describe "array" ([ --- ]
-            : set "a" array_new
-            : assert_equals 0 (array_len a)          "should give the correct length of empty array"
-            : assert_equals true (array_is_empty a)  "should return true if array is empty"
+    : run functions_tests
+    : run builtins_tests
 
-            : set "a" (array_add 5 a)
-            : set "a" (array_add 3 a)
-            : set "a" (array_add 1 a)
+    : run std_tests
 
-            : assert_equals 3 (array_len a)           "should give the correct length of an array"
-            : assert_equals false (array_is_empty a)  "should return false if array is not empty"
-
-            : assert_equals "531" (reduce + "" a)     "should reduce an array to a string '531'"
-            : assert_equals  108  (reduce + 99 a)     "should reduce an array to an int '108' by addition with base 99"
-            : assert_equals   15  (reduce *  1 a)     "should reduce an array to an int '15' by multiplication from 1"
-
-            : set "b" (map (+ 2) a)
-            : assert_equals "753" (reduce + "" b)     "should reduce an array to a string '753' after mapping with (+ 2)"
-        )
-    )
+    : run types_tests
 )

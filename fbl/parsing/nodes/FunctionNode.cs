@@ -61,5 +61,20 @@ namespace FBL.Parsing.Nodes
                 Context = Context
             };
         }
+
+        public override bool DeepEquals(ExpressionNode b, long visitId)
+        {
+            if (this == b) return true;
+
+            if (b is FunctionNode bf)
+            {
+                return ToString() == bf.ToString()
+                    && (Context?.LastVisitedAt == visitId
+                    || Context == bf.Context
+                    || (Context?.DeepEquals(bf.Context, visitId) ?? false));
+            }
+
+            return false;
+        }
     }
 }

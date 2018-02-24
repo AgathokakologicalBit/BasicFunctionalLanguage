@@ -1,0 +1,28 @@
+: include "core.fbl"
+: include "tools.fbl"
+: include "testing.fbl"
+
+
+: ( set "std_tests" [ --- ]
+    : test "std" ([ --- ]
+        : describe "array" ([ --- ]
+            : set "a" array_new
+            : assert_equals 0 (array_len a)          "should give the correct length of empty array"
+            : assert_equals true (array_is_empty a)  "should return true if array is empty"
+
+            : set "a" (array_add 5 a)
+            : set "a" (array_add 3 a)
+            : set "a" (array_add 1 a)
+
+            : assert_equals 3 (array_len a)           "should give the correct length of an array"
+            : assert_equals false (array_is_empty a)  "should return false if array is not empty"
+
+            : assert_equals "531" (reduce + "" a)     "should reduce an array to a string '531'"
+            : assert_equals  108  (reduce + 99 a)     "should reduce an array to an int '108' by addition with base 99"
+            : assert_equals   15  (reduce *  1 a)     "should reduce an array to an int '15' by multiplication from 1"
+
+            : set "b" (map (+ 2) a)
+            : assert_equals "753" (reduce + "" b)     "should reduce an array to a string '753' after mapping with (+ 2)"
+        )
+    )
+)

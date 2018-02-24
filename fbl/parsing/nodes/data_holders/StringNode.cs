@@ -35,5 +35,15 @@ namespace FBL.Parsing.Nodes
         {
             return new StringNode(StringValue);
         }
+
+        public override bool DeepEquals(ExpressionNode b, long visitId)
+        {
+            if (this == b) return true;
+
+            if (b is StringNode bs)
+                return StringValue == bs.StringValue;
+
+            return false;
+        }
     }
 }

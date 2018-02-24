@@ -1,0 +1,48 @@
+: include "core.fbl"
+: include "tools.fbl"
+: include "types.fbl"
+
+: ( set "types_tests" [ args ]
+    : test "types" ([ --- ]
+        : set "Vector" (Type "Vector" ([ declare_property ]
+            ` Initializing properties by 0 by default
+            : declare_property "x" 0
+            : declare_property "y" 0
+            : declare_property "z" 0
+        ))
+
+        ` Creating vector constructor aliases
+        : set "VectorZero" ([ --- ] default Vector)
+        : set "VectorOne" ([ --- ]
+            Vector ([ self ] ` Passing the custom constructor
+                : self << "x" 1
+                : self << "y" 1
+                : self << "z" 1
+            )
+        )
+    
+        ` Testing vectors construction & usage
+        : describe "creation" ([ --- ]
+            : set "a" (default VectorZero)
+            : set "b" (default VectorZero)
+            : set "c" (default VectorOne)
+
+            : assert_equals "Vector" (typeof a "name") "(typeof a).name == 'Vector'"
+            : assert_equals "Vector" (typeof b "name") "(typeof b).name == 'Vector'"
+            : assert_equals "Vector" (typeof c "name") "(typeof c).name == 'Vector'"
+
+
+            : assert_equals true (equals a b)  "2 Vector zero should have the same value. (0, 0, 0) == (0, 0, 0)"
+            : assert_equals false (equals a c) "Vector zero should be different from Vector one. (0, 0, 0) != (1, 1, 1)"
+
+            : a << "x" 1
+            : assert_equals false (equals a b) "Vectors should not be be equal after change. (0, 0, 0) != (1, 0, 0)"
+            : b << "x" 1
+            : assert_equals true (equals a b) "Vectors should be equal after change. (1, 0, 0) == (1, 0, 0)"
+
+            : assert_equals 1 (a >> "x") "Getters should return actual values. (1, 0, 0).x == 1"
+            : assert_equals 0 (a >> "y") "Getters should return actual values. (1, 0, 0).y == 0"
+            : assert_equals 0 (a >> "z") "Getters should return actual values. (1, 0, 0).z == 0"
+        )
+    )
+)
