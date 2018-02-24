@@ -43,6 +43,11 @@
             : assert_equals 1 (a >> "x") "Getters should return actual values. (1, 0, 0).x == 1"
             : assert_equals 0 (a >> "y") "Getters should return actual values. (1, 0, 0).y == 0"
             : assert_equals 0 (a >> "z") "Getters should return actual values. (1, 0, 0).z == 0"
+
+            : set "d" a
+            : assert_equals true (equals a d)  "ref copied vector should be equal to the original. (1, 0, 0) == (1, 0, 0)"
+            : d << "z" 4
+            : assert_equals true (equals a d)  "ref copy should change the base value"
         )
     )
 )
