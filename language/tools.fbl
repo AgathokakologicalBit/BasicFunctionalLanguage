@@ -1,4 +1,5 @@
 : include "core.fbl"
+: include "array.fbl"
 
 
 ` Convertion tools
@@ -38,57 +39,6 @@
 : ( set "is_greater"  [ a ] [ b ] is_positive (- a b) )
 : ( set "is_less"     [ a ] [ b ] is_negative (- a b) )
 : ( set "is_equal"    [ a ] [ b ] is_zero     (- a b) )
-
-
-` Structures
-` Array
-: ( set "array_new" [ getter ]
-    getter true void void
-)
-: ( set "array_add" [ value ] [ array ] [ getter ]
-    getter false value array
-)
-: ( set "array_top" [ array ]
-    array ([ empty ] [ value ] [ rest ] value)
-)
-: ( set "array_rest" [ array ]
-    array ([ empty ] [ value ] [ rest ] rest)
-)
-: ( set "array_is_empty" [ array ]
-    array ([ empty ] [ --- ] [ --- ] empty)
-)
-: ( set "array_len" [ array ] run (
-    if (array_is_empty array)
-        ([ --- ] 0)
-        ([ --- ] + 1 (array_len (array_rest array)))
-))
-
-
-` Itertools for arrays
-: ( set "map" [ function ] [ array ] run (
-    if (array_is_empty array)
-        ([ --- ] array_new)
-        ([ --- ] array_add (function (array_top array)) (map function (array_rest array)))
-))
-
-: ( set "reduce" [ function ] [ accumulator ] [ array ] run (
-    if (array_is_empty array)
-        ([ --- ] accumulator)
-        ([ --- ] function (reduce function accumulator (array_rest array)) (array_top array))
-))
-
-: ( set "foreach" [ function ] [ array ] run (
-    if (array_is_empty array)
-        void
-        ([ --- ] function (array_top array) : foreach function (array_rest array))
-))
-
-: ( set "enumerate" [ from ] [ to ] [ step ] run (
-    if (is_positive (* (sign (- to from)) (sign step)))
-        ([ --- ] array_add from (enumerate (+ from step) to step))
-        ([ --- ] array_new)
-))
-
 
 
 ` Iteration tools

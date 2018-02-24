@@ -1,0 +1,90 @@
+: include "core.fbl"
+: include "tools.fbl"
+: include "types.fbl"
+
+
+` Array
+: ( set "ArrayType" (Type "Array" [ declare_property ]
+    : declare_property "is_empty" true
+    : declare_property "length" 0
+
+    : declare_property "raw" ([ getter ] getter true void void)
+    
+    : declare_property "top"  void
+
+    : declare_property "push" void
+    : declare_property "pop"  void
+))
+
+` Standard constructor
+: ( set "Array" ([ --- ] ArrayType [ self ]
+    : self << "push" ([ value ]
+        : self << "length" (+ (self "length") 1)
+        : self << "is_empty" false
+
+        : self << "top" value
+
+        : set "__raw" (self "raw")
+        : self << "raw" ([ getter ] getter false value __raw)
+    )
+    : self << "pop" ([ --- ] run (
+        : if (self "is_empty")
+            ([ --- ]
+                : puts "\nERROR: Can not pop element from an empty array!\n"
+                : false
+            )
+            ([ --- ]
+                : self << "length"   (- (self "length") 1)
+                : self << "is_empty" (equals (self "length") 0)
+
+                : self << "raw"      (self "raw" ([_][_][#] #))
+                : self << "top"      (self "raw" ([_][#][_] #))
+
+                : true
+            )
+    ))
+))
+
+` Itertools for arrays
+: ( set "map" [ function ] [ array ]
+    : ([ new_array ]
+        : ( set "__map" [ function ] [ array_raw ] run (
+            if (array_raw ([#][_][_] #)) void
+            ([ --- ]
+                : __map function (array_raw ([_][_][#] #))
+                : new_array "push" (function (array_raw ([_][#][_] #)))
+            )
+        ))
+        : __map function (array "raw")
+        : new_array
+    ) (default Array)
+)
+
+: ( set "reduce" [ function ] [ accumulator ] [ array ]
+    : foreach ([ value ]
+        : set "accumulator" (function accumulator value)
+    ) array
+    : accumulator
+)
+
+: ( set "foreach" [ function ] [ array ]
+    : ( set "__foreach" [ function ] [ array_raw ] run (
+        if (array_raw ([#][_][_] #)) void
+        ([ --- ]
+            : __foreach function (array_raw ([_][_][#] #))
+            : function (array_raw ([_][#][_] #))
+        )
+    ))
+    : __foreach function (array "raw")
+)
+
+: ( set "enumerate" [ from ] [ to ] [ step ]
+    : ([ array_new ]
+        : while ([ --- ] is_positive (* (sign (- to from)) (sign step)))
+        ([ --- ]
+            : array_new "push" from
+            : set "from" (+ from step)
+        )
+        : array_new
+    ) (default Array)
+)

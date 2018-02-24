@@ -6,23 +6,36 @@
 : ( set "std_tests" [ --- ]
     : test "std" ([ --- ]
         : describe "array" ([ --- ]
-            : set "a" array_new
-            : assert_equals 0 (array_len a)          "should give the correct length of empty array"
-            : assert_equals true (array_is_empty a)  "should return true if array is empty"
+            : set "a" (default Array)
+            : assert_equals 0 (a "length")         "empty array's length should be 0"
+            : assert_equals true (a "is_empty")    "array 'is_empty' should be true on initialization"
 
-            : set "a" (array_add 5 a)
-            : set "a" (array_add 3 a)
-            : set "a" (array_add 1 a)
+            : a "push" 5
+            : a "push" 3
+            : a "push" 1
 
-            : assert_equals 3 (array_len a)           "should give the correct length of an array"
-            : assert_equals false (array_is_empty a)  "should return false if array is not empty"
+            : assert_equals 3 (a "length")         "array's length after 3 pushes should be equal to 3"
+            : assert_equals false (a "is_empty")   "array 'is_empty' should be false after elements addition"
 
-            : assert_equals "531" (reduce + "" a)     "should reduce an array to a string '531'"
-            : assert_equals  108  (reduce + 99 a)     "should reduce an array to an int '108' by addition with base 99"
-            : assert_equals   15  (reduce *  1 a)     "should reduce an array to an int '15' by multiplication from 1"
+            : a "push" 42
+            : run (a "pop")
+            : assert_equals 3 (a "length")         "remove top element from the array"
+
+            : assert_equals "531" (reduce + "" a)  "reduce an array to a string '531'"
+            : assert_equals  108  (reduce + 99 a)  "reduce an array to an int '108' by addition with base 99"
+            : assert_equals   15  (reduce *  1 a)  "reduce an array to an int '15' by multiplication from 1"
 
             : set "b" (map (+ 2) a)
-            : assert_equals "753" (reduce + "" b)     "should reduce an array to a string '753' after mapping with (+ 2)"
+            : assert_equals "753" (reduce + "" b)  "reduce an array to a string '753' by mapping with (+ 2)"
+
+
+            : set "c" (enumerate 1 11 2)
+            : assert_equals 5 (c "length")           "enumeration from 1 to 11 with step 2 exclusive has 5 elements"
+            : assert_equals "13579" (reduce + "" c)  "enumeration from 1 to 11 with step 2 is '13579'"
+
+            : set "d" (enumerate 9 (- 0 1) (- 0 2))
+            : assert_equals 5 (d "length")           "enumeration from 9 to -1 with step -2 exclusive has 5 elements"
+            : assert_equals "97531" (reduce + "" d)  "enumeration from 9 to -1 with step -2 is '97531'"
         )
     )
 )
