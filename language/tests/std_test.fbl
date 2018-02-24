@@ -7,19 +7,17 @@
     : test "std" ([ --- ]
         : describe "array" ([ --- ]
             : set "a" (default Array)
-            : assert_equals 0 (a "length")         "empty array's length should be 0"
+            : assert_equals 0 (a -> "length")      "empty array's length should be 0"
             : assert_equals true (a "is_empty")    "array 'is_empty' should be true on initialization"
 
-            : a "push" 5
-            : a "push" 3
-            : a "push" 1
+            : a << 5 << 3 << 1
 
-            : assert_equals 3 (a "length")         "array's length after 3 pushes should be equal to 3"
+            : assert_equals 3 (a -> "length")      "array's length after 3 pushes should be equal to 3"
             : assert_equals false (a "is_empty")   "array 'is_empty' should be false after elements addition"
 
-            : a "push" 42
+            : a << 42
             : run (a "pop")
-            : assert_equals 3 (a "length")         "remove top element from the array"
+            : assert_equals 3 (a -> "length")      "remove top element from the array"
 
             : assert_equals "531" (reduce + "" a)  "reduce an array to a string '531'"
             : assert_equals  108  (reduce + 99 a)  "reduce an array to an int '108' by addition with base 99"
@@ -30,11 +28,11 @@
 
 
             : set "c" (enumerate 1 11 2)
-            : assert_equals 5 (c "length")           "enumeration from 1 to 11 with step 2 exclusive has 5 elements"
+            : assert_equals 5 (c -> "length")        "enumeration from 1 to 11 with step 2 exclusive has 5 elements"
             : assert_equals "13579" (reduce + "" c)  "enumeration from 1 to 11 with step 2 is '13579'"
 
             : set "d" (enumerate 9 (- 0 1) (- 0 2))
-            : assert_equals 5 (d "length")           "enumeration from 9 to -1 with step -2 exclusive has 5 elements"
+            : assert_equals 5 (d -> "length")        "enumeration from 9 to -1 with step -2 exclusive has 5 elements"
             : assert_equals "97531" (reduce + "" d)  "enumeration from 9 to -1 with step -2 is '97531'"
         )
     )

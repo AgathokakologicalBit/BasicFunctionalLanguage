@@ -1,0 +1,10 @@
+: set "<<" "$op_move_left"
+: set ">>" "$op_move_right"
+
+: set "<-" "$op_arrow_left"
+: set "->" "$op_arrow_right"
+
+: set "<<<" "$op_move_l_left"
+: set ">>>" "$op_move_l_right"
+
+: set "<>" "$op_left_right"

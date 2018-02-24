@@ -1,3 +1,6 @@
+: include "operators.fbl"
+
+
 : ( set "void" [ --- ] void )
 : ( set "run" [ function ] function void )
 

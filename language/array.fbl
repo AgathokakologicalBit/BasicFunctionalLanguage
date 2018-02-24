@@ -14,35 +14,42 @@
 
     : declare_property "push" void
     : declare_property "pop"  void
+
+    ` Special operators
+    : declare_property << void  ` Alias for 'push'
 ))
 
 ` Standard constructor
 : ( set "Array" ([ --- ] ArrayType [ self ]
-    : self << "push" ([ value ]
-        : self << "length" (+ (self "length") 1)
-        : self << "is_empty" false
+    : self <- "push" ([ value ]
+        : self <- "length" (+ (self -> "length") 1)
+        : self <- "is_empty" false
 
-        : self << "top" value
+        : self <- "top" value
 
-        : set "__raw" (self "raw")
-        : self << "raw" ([ getter ] getter false value __raw)
+        : set "__raw" (self -> "raw")
+        : self <- "raw" ([ getter ] getter false value __raw)
+        : self
     )
-    : self << "pop" ([ --- ] run (
-        : if (self "is_empty")
+    : self <- "pop" ([ --- ] run (
+        : if (self -> "is_empty")
             ([ --- ]
                 : puts "\nERROR: Can not pop element from an empty array!\n"
                 : false
             )
             ([ --- ]
-                : self << "length"   (- (self "length") 1)
-                : self << "is_empty" (equals (self "length") 0)
+                : self <- "length"   (- (self -> "length") 1)
+                : self <- "is_empty" (equals (self -> "length") 0)
 
-                : self << "raw"      (self "raw" ([_][_][#] #))
-                : self << "top"      (self "raw" ([_][#][_] #))
+                : self <- "raw"      (self "raw" ([_][_][#] #))
+                : self <- "top"      (self "raw" ([_][#][_] #))
 
                 : true
             )
     ))
+
+    ` Adding new push operator alias
+    : self <- << (self -> "push")
 ))
 
 ` Itertools for arrays
@@ -52,10 +59,10 @@
             if (array_raw ([#][_][_] #)) void
             ([ --- ]
                 : __map function (array_raw ([_][_][#] #))
-                : new_array "push" (function (array_raw ([_][#][_] #)))
+                : new_array << (function (array_raw ([_][#][_] #)))
             )
         ))
-        : __map function (array "raw")
+        : __map function (array -> "raw")
         : new_array
     ) (default Array)
 )
@@ -75,14 +82,14 @@
             : function (array_raw ([_][#][_] #))
         )
     ))
-    : __foreach function (array "raw")
+    : __foreach function (array -> "raw")
 )
 
 : ( set "enumerate" [ from ] [ to ] [ step ]
     : ([ array_new ]
         : while ([ --- ] is_positive (* (sign (- to from)) (sign step)))
         ([ --- ]
-            : array_new "push" from
+            : array_new << from
             : set "from" (+ from step)
         )
         : array_new

@@ -3,9 +3,8 @@
 
 
 : ( set "default" [ type ] type void )
-: ( set "<<" "<<" )
-: ( set ">>" ">>" )
 : ( set "typeof" [ object ] object "__type" )
+
 
 : set "__types" void
 : run ([ --- ]
@@ -13,9 +12,9 @@
     : set "__$getter" get
 
     ( set "__types" [ action ]
-        if (equals action "<<")
+        if (equals action <-)
             ([ name ] __$setter (+ "__$t_" name))
-        (if (equals action ">>")
+        (if (equals action ->)
             ([ name ] __$getter (+ "__$t_" name))
             (void)
         )
@@ -29,12 +28,17 @@
     : set "__$type_get" get
     : set "__$type_props_count" 0
 
-    : describer ( [ name ]
+    : set "__$type_add_prop" ( [ name ]
         : __$type_set (+ "__$type_var_" __$type_props_count) name
         : __$type_set (+ "__$type_exs_" name) true
         : __$type_set "__$type_props_count" (+ __$type_props_count 1)
+        : __$type_set (+ "__$type_val_" (- __$type_props_count 1)) void
         : __$type_set (+ "__$type_val_" (- __$type_props_count 1))
     )
+
+    : __$type_add_prop <-
+    : __$type_add_prop ->
+    : describer __$type_add_prop
 
     ` We should return the type instantiator (object constructor)
     : set "__$type_constructor" ([ constructor ]
@@ -58,6 +62,10 @@
                 )
         ))
 
+
+        : __$type_set (+ "__$type_val_" 0) __$object_set_u
+        : __$type_set (+ "__$type_val_" 1) __$object_get_u
+
         : loop __$type_props_count ([ property_index ]
             : __$object_set_u
                 (__$type_get (+ "__$type_var_" property_index))
@@ -66,20 +74,15 @@
 
         : (([ object ] constructor object : object)
             ([ action ] run (
-                (if (equals action "<<")
-                    ([ --- ] __$object_set_u)
-                (if (equals action ">>")
-                    ([ --- ] __$object_get_u)
-                (if (equals action "__type")
-                    ([ --- ] __types >> name)
+                if (equals action "__type")
+                    ([ --- ] __types -> name)
                     ([ --- ] __$object_get_u action)
-                )))
             ))
         )
     )
 
     ` Register information about newly created type
-    : __types << name ( [ action ] run (
+    : __types <- name ( [ action ] run (
         if (equals action "name")
             ([ --- ] name)
         (if (equals action "constructor")
