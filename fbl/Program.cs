@@ -71,7 +71,7 @@ namespace FBL
                 Console.WriteLine("\n\n===---   RUN MAIN   ---===");
 
                 watch.Start();
-                interpreter.Run("main", new StringNode("world"));
+                interpreter.Run("main", new StringNode("", false));
                 watch.Stop();
                 Console.WriteLine($"\n [E] Ellapsed time: {watch.Elapsed.TotalSeconds}s");
             }

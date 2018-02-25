@@ -77,7 +77,7 @@ namespace FBL.Parsing
             else if (token.Is(TokenType.String))
             {
                 state.Drop();
-                return new StringNode(token.Value);
+                return new StringNode(token.Value, true);
             }
             else if (token.Is(TokenSubType.BraceRoundLeft))
             {

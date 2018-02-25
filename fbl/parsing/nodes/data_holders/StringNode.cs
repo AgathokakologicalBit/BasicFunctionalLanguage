@@ -8,26 +8,33 @@ namespace FBL.Parsing.Nodes
 
         public string StringValue { get; set; }
 
-        public StringNode(string value)
+        public StringNode(string value, bool escape)
         {
-            string EscapeCharacter(Match m)
+            if (escape)
             {
-                string character = m.Groups[1].Value;
-                switch (character[0])
+                string EscapeCharacter(Match m)
                 {
-                    case 'n': return "\n";
-                    case 't': return "\t";
-                    case 's': return " ";
-                    default: return character.ToString();
+                    string character = m.Groups[1].Value;
+                    switch (character[0])
+                    {
+                        case 'n': return "\n";
+                        case 't': return "\t";
+                        case 's': return " ";
+                        default: return character.ToString();
+                    }
                 }
-            }
 
-            StringValue = regexEscaper.Replace(value, EscapeCharacter);
+                StringValue = regexEscaper.Replace(value, EscapeCharacter);
+            }
+            else
+            {
+                StringValue = value;
+            }
         }
 
         public override string ToString()
         {
-            return $"{StringValue}";
+            return StringValue;
         }
 
         public override bool DeepEquals(ExpressionNode b, long visitId)

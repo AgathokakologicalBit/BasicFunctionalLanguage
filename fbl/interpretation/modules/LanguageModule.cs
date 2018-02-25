@@ -154,7 +154,7 @@ namespace FBL.Interpretation.Modules
 
         ExpressionNode Input(ExpressionNode type, Context context)
         {
-            var data = new StringNode(Console.ReadLine());
+            var data = new StringNode(Console.ReadLine(), false);
             var result = interpreter.Run(type, data);
             return result;
         }
@@ -191,7 +191,7 @@ namespace FBL.Interpretation.Modules
         }
 
         public static StringNode ToString(ExpressionNode node, Context context)
-            => new StringNode(node.ToString());
+            => new StringNode(node.ToString(), false);
 
 
         ExpressionNode Add(ExpressionNode left, Context context)
@@ -206,7 +206,7 @@ namespace FBL.Interpretation.Modules
                             + ToNumber(right, c).NumericValue);
                     }
 
-                    return new StringNode(left.ToString() + right.ToString());
+                    return new StringNode(left.ToString() + right.ToString(), false);
                 }
             )
             { Parameter = new VariableNode("right") };
