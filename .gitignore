@@ -6,3 +6,5 @@
 .vs
 bin
 obj
+
+_optimize*
