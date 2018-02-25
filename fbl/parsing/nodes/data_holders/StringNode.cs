@@ -23,17 +23,11 @@ namespace FBL.Parsing.Nodes
             }
 
             StringValue = regexEscaper.Replace(value, EscapeCharacter);
-            Value = this;
         }
 
         public override string ToString()
         {
             return $"{StringValue}";
-        }
-
-        public override ExpressionNode Clone()
-        {
-            return new StringNode(StringValue);
         }
 
         public override bool DeepEquals(ExpressionNode b, long visitId)

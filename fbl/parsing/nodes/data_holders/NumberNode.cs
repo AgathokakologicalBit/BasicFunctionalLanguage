@@ -4,35 +4,22 @@ namespace FBL.Parsing.Nodes
 {
     public class NumberNode : ExpressionNode
     {
-        public string NumericValue { get; private set; }
-
-        public bool IsDecimal { get; private set; }
+        public decimal NumericValue { get; private set; }
 
 
-        public NumberNode(string value, bool isDecimal)
+        public NumberNode(string value)
         {
-            NumericValue = value;
-            IsDecimal = isDecimal;
-
-            Value = this;
+            NumericValue = decimal.Parse(value, NumberStyles.Number, CultureInfo.InvariantCulture);
         }
 
         public NumberNode(decimal value)
         {
-            NumericValue = value.ToString(CultureInfo.InvariantCulture);
-            IsDecimal = true;
-
-            Value = this;
+            NumericValue = value;
         }
 
         public override string ToString()
         {
-            return $"{NumericValue}";
-        }
-
-        public override ExpressionNode Clone()
-        {
-            return new NumberNode(NumericValue, IsDecimal);
+            return NumericValue.ToString();
         }
 
         public override bool DeepEquals(ExpressionNode b, long visitId)

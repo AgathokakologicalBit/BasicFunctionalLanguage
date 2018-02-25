@@ -66,8 +66,7 @@ namespace FBL.Parsing
             {
                 state.Drop();
                 return new NumberNode(
-                    value: token.Value,
-                    isDecimal: token.Is(TokenSubType.Decimal)
+                    value: token.Value
                 );
             }
             else if (token.Is(TokenType.Identifier))

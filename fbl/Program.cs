@@ -4,6 +4,7 @@ using FBL.Parsing;
 using FBL.Parsing.Nodes;
 using FBL.Tokenization;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace FBL
@@ -36,21 +37,25 @@ namespace FBL
                 SkipWhitespace = true
             });
 
+            var watch = Stopwatch.StartNew();
             var tokens = tokenizer.Tokenize();
+            watch.Stop();
             Console.WriteLine("\n===---        STATS        ---===");
 
             Console.WriteLine($" [T] Tokens count: {tokens.Length}");
+            Console.WriteLine($" [T] Ellapsed time: {watch.Elapsed.TotalSeconds}s");
 
+            watch.Start();
             var ast = Parser.Parse(tokens);
+            watch.Stop();
+
+            Console.WriteLine($"\n [P] Ellapsed time: {watch.Elapsed.TotalSeconds}s");
+
             if (ast == null)
             {
                 Console.Error.WriteLine("Error occurred during compilation process");
                 return;
             }
-
-            Console.WriteLine("\n\n===---        AST        ---===");
-            Console.WriteLine(ast.ToString());
-
 
             Console.WriteLine("\n\n===---  INTERPRETATION   ---===");
             var interpreter = new Interpreter();
@@ -58,10 +63,17 @@ namespace FBL
 
             try
             {
+                watch.Start();
                 interpreter.Run(ast);
+                watch.Stop();
+                Console.WriteLine($"\n [E] Ellapsed time: {watch.Elapsed.TotalSeconds}s");
 
                 Console.WriteLine("\n\n===---   RUN MAIN   ---===");
+
+                watch.Start();
                 interpreter.Run("main", new StringNode("world"));
+                watch.Stop();
+                Console.WriteLine($"\n [E] Ellapsed time: {watch.Elapsed.TotalSeconds}s");
             }
             catch (Exception e)
             {

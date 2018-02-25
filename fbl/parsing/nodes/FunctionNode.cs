@@ -6,11 +6,6 @@ namespace FBL.Parsing.Nodes
     public class FunctionNode : ExpressionNode
     {
         /// <summary>
-        /// Parent Class/Function
-        /// </summary>
-        public Node Parent { get; set; }
-
-        /// <summary>
         /// List of named parameters
         /// </summary>
         public VariableNode Parameter { get; set; }
@@ -21,19 +16,15 @@ namespace FBL.Parsing.Nodes
         public ExpressionNode Code { get; set; }
 
 
-        public bool IsNative { get; set; }
         public Func<ExpressionNode, Context, ExpressionNode> Function { get; set; }
 
 
         public FunctionNode()
         {
-            this.IsNative = false;
-            this.Value = this;
         }
 
         public FunctionNode(Func<ExpressionNode, Context, ExpressionNode> import)
         {
-            this.IsNative = true;
             this.Function = import;
         }
 
@@ -52,11 +43,8 @@ namespace FBL.Parsing.Nodes
         {
             return new FunctionNode
             {
-                Value = Value,
-                Parent = Parent,
                 Parameter = Parameter,
                 Code = Code,
-                IsNative = IsNative,
                 Function = Function,
                 Context = Context
             };

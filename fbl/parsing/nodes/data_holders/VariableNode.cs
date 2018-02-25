@@ -23,11 +23,5 @@
         {
             return $"{Name}";
         }
-
-
-        public override ExpressionNode Clone()
-        {
-            return new VariableNode(Name);
-        }
     }
 }

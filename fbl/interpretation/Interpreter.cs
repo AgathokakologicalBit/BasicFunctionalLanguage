@@ -2,6 +2,7 @@
 using FBL.Parsing.Nodes;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace FBL.Interpretation
 {
@@ -79,13 +80,14 @@ namespace FBL.Interpretation
             context.Values.Add(name, value);
             return value;
         }
+
         public ExpressionNode GetVariable(string name, Context context)
         {
             var ctx = context;
             while (ctx != null)
             {
-                if (ctx.Values.ContainsKey(name))
-                    return ctx.Values[name];
+                if (ctx.Values.TryGetValue(name, out ExpressionNode value))
+                    return value;
 
                 ctx = ctx.Parent;
             }
@@ -104,7 +106,7 @@ namespace FBL.Interpretation
             {
                 ExpressionNode right = Evaluate((dynamic)node.Argument, context);
 
-                if (leftFunc.IsNative)
+                if (leftFunc.Function != null)
                     return leftFunc.Function(right, context);
 
                 var subContext = new Context(leftFunc.Context);
@@ -113,7 +115,8 @@ namespace FBL.Interpretation
                     new FunctionNode((i, c) => Set(i, subContext)) { Parameter = new VariableNode("name") };
                 subContext.Values["get"] =
                     new FunctionNode((i, c) => Get(i, subContext)) { Parameter = new VariableNode("name") };
-                subContext.Values[leftFunc.Parameter?.Name ?? "it"] = right;
+
+                subContext.Values[leftFunc.Parameter.Name] = right;
 
                 return Evaluate((dynamic)leftFunc.Code, subContext);
             }
@@ -133,13 +136,13 @@ namespace FBL.Interpretation
 
         private FunctionNode Set(ExpressionNode input, Context context)
             => new FunctionNode(
-                (v, c) => SetVariable(LanguageModule.ToString(input, context).StringValue, v?.Clone(), context)
+                (v, c) => SetVariable(LanguageModule.ToString(input, context).StringValue, v, context)
             )
             { Parameter = new VariableNode("right") };
 
         private ExpressionNode Evaluate(BlockNode node, Context context)
         {
-            ExpressionNode result = new ExpressionNode() { Context = context };
+            ExpressionNode result = null;
 
             foreach (var exp in node.Code)
                 result = Evaluate((dynamic)exp, context);
@@ -153,24 +156,18 @@ namespace FBL.Interpretation
             while (ctx != null)
             {
                 if (ctx.Values.TryGetValue(node.Name, out ExpressionNode value))
-                {
-                    // value = value ?? new ExpressionNode();
-                    // value.Context = ctx;
                     return value;
-                }
+
                 ctx = ctx.Parent;
             }
 
-            var expression = new ExpressionNode();
-            context.Values.Add(node.Name, expression);
-            expression.Context = context;
-            return expression;
+            return new ExpressionNode();
         }
 
         private ExpressionNode Evaluate(ExpressionNode node, Context context)
         {
             var value = node?.Clone() ?? new ExpressionNode();
-            value.Context = context;
+            if (value is FunctionNode) value.Context = context;
             return value;
         }
     }
