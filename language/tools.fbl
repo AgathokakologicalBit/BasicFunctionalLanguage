@@ -1,5 +1,6 @@
 : include "core.fbl"
 : include "array.fbl"
+: include "pair.fbl"
 
 
 ` Convertion tools
@@ -20,7 +21,7 @@
 : ( set "id" [ value ] value )
 : ( set "compose" [ f ] [ g ] [ arg ] f ( g arg ))
 : ( set "@" compose )
-: ( set "swp" [ a ] [ b ] [ func ] func b a )
+: ( set "arg_swap" [ function ] [ a ] [ b ] function b a )
 : ( set "power" [ _power ] [ function ] [ value ] run (
     __if _power
         ([ --- ] function (power (- _power 1) function value))

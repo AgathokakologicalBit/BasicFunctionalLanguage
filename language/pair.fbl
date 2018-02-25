@@ -1,29 +1,23 @@
-: include "tools.fbl"
+: include "core.fbl"
+: include "types.fbl"
 
-: (set "Pair" [ a ] [ b ] 
-    [ getter ] getter a b
+
+: ( set "PairType" (Type "Pair" ([ declare_property ]
+    : declare_property "first"
+    : declare_property "second"
+)))
+
+: ( set "Pair" [ --- ] default PairType )
+
+: ( set "PairOf" [ a ] [ b ] PairType [ self ]
+    : self <- "first" a
+    : self <- "second" b
 )
 
-: (set "fst" [ pr ] 
-    pr ([ a ] [ _ ] a)
-)
+: (set "curry" [ function ] [ a ] [ b ] function (PairOf a b) )
 
-: (set "scd" [ pr ] 
-    pr ([ _ ] [ b ] b)
-)
+: ( set "uncurry" [ function ] [ pair ] function (pair "first") (pair "second") )
 
-: (set "curry" [ func ]
-    [ a ] [ b ] func (pair a b)
-)
+: ( set "pair_swap" [ pair ] PairOf (pair "second") (pair "first") )
 
-: (set "uncurry" [ func ]
-    ([ pr ] pr func )
-)
-
-: (set "pair_swp" [ pr ]
-    (pr swp) pair
-)
-
-: (set "ppair" [ pr ] 
-    puts "(" (fst pr) ", " (scd pr) ")\n"
-)
+: (set "ppair" [ pair ] puts "(" (pair "first") ", " (pair "second") ")\n" )

@@ -41,5 +41,27 @@
             : assert_equals 500 (e -> "length")      "big arrays mapping (100 elements)"
             : set "es" (reduce + "array: [" em)
         )
+
+        : describe "pair" ([ --- ]
+            : set "p" (PairOf "a" "b")
+            : set "q" (PairOf "b" "a")
+
+            : assert_equals "a" (p "first")    "(a, b).first == a"
+            : assert_equals "b" (p "second")   "(a, b).second == b"
+            : assert_equals false (equals p q) "(a, b) != (b, a)"
+
+            : set "p" (pair_swap p)
+            : assert_equals "b" (p "first")    "(b, a).first == b"
+            : assert_equals "a" (p "second")   "(b, a).second == a"
+            : assert_equals true (equals p q)  "(b, a) == (b, a)"
+
+            : set "_gf" ([ a ] [ b ] a)
+            : set "_gfu" (uncurry _gf)
+            : set "_gfuc" ([ p ] p "first")
+            : set "_gfc" (curry _gfuc)
+
+            : assert_equals "b" (_gfu p)       "uncurry ([a][b] a) (b, a) == b"
+            : assert_equals "a" (_gfc "a" "b") "curry ([p] p.first) a b == b"
+        )
     )
 )
