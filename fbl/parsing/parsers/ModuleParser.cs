@@ -1,4 +1,5 @@
 ﻿using FBL.Parsing.Nodes;
+using System;
 
 namespace FBL.Parsing
 {
@@ -7,7 +8,7 @@ namespace FBL.Parsing
         public static CoreNode Parse(Parser.State state)
         {
             var node = new CoreNode();
-            Node value;
+            ExpressionNode value;
 
             int lastIndex = state.Index;
             while ((value = ExpressionParser.Parse(state)) != null && !state.IsErrorOccured())
@@ -16,7 +17,14 @@ namespace FBL.Parsing
                     break;
 
                 lastIndex = state.Index;
-                node.code.Add(value);
+                node.Code = value;
+
+                if (state.Index + 1 < state.Tokens.Count && !state.IsErrorOccured())
+                {
+                    Console.WriteLine($"{state.Index} / {state.Tokens.Count}");
+                    state.ErrorCode = (uint)ErrorCodes.T_UnexpectedEndOfFile;
+                    state.ErrorMessage = "Something really wrong happend";
+                }
             }
 
             return node;

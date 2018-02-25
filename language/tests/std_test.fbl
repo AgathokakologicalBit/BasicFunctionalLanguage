@@ -1,5 +1,7 @@
 : include "core.fbl"
 : include "tools.fbl"
+: include "array.fbl"
+: include "pair.fbl"
 : include "testing.fbl"
 
 

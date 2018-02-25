@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FBL.Parsing.Nodes
 {
@@ -17,6 +19,13 @@ namespace FBL.Parsing.Nodes
         public override string ToString()
         {
             return string.Join("\n", Code);
+        }
+
+        public override string ToCodeString(int depth)
+        {
+            return $"\n{new String(' ', depth * 2)}: " + string.Join(
+                $"\n{new String(' ', depth * 2)}: ",
+                Code.Select(line => line.ToCodeString(depth + 1)));
         }
     }
 }

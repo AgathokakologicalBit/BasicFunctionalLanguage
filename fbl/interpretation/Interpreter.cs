@@ -2,7 +2,6 @@
 using FBL.Parsing.Nodes;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace FBL.Interpretation
 {
@@ -15,20 +14,15 @@ namespace FBL.Interpretation
         public Interpreter()
         {
             globalContext.Values["set"] =
-                    new FunctionNode((i, c) => Set(i, globalContext)) { Parameter = new VariableNode("name") };
+                    new FunctionNode((i, c) => Set(i, globalContext), false, false) { Parameter = new VariableNode("name") };
             globalContext.Values["get"] =
-                new FunctionNode((i, c) => Get(i, globalContext)) { Parameter = new VariableNode("name") };
+                new FunctionNode((i, c) => Get(i, globalContext), false, false) { Parameter = new VariableNode("name") };
         }
 
 
         public ExpressionNode Run(CoreNode program)
         {
-            var result = new ExpressionNode();
-
-            foreach (var exp in program.code)
-                result = Evaluate((dynamic)exp, GetGlobalContext());
-
-            return result;
+            return Evaluate((dynamic)program.Code, GetGlobalContext());
         }
 
         public ExpressionNode Run(ExpressionNode node, StringNode data)
@@ -112,9 +106,9 @@ namespace FBL.Interpretation
                 var subContext = new Context(leftFunc.Context);
 
                 subContext.Values["set"] =
-                    new FunctionNode((i, c) => Set(i, subContext)) { Parameter = new VariableNode("name") };
+                    new FunctionNode((i, c) => Set(i, subContext), false, false) { Parameter = new VariableNode("name") };
                 subContext.Values["get"] =
-                    new FunctionNode((i, c) => Get(i, subContext)) { Parameter = new VariableNode("name") };
+                    new FunctionNode((i, c) => Get(i, subContext), false, false) { Parameter = new VariableNode("name") };
 
                 subContext.Values[leftFunc.Parameter.Name] = right;
 
@@ -136,7 +130,8 @@ namespace FBL.Interpretation
 
         private FunctionNode Set(ExpressionNode input, Context context)
             => new FunctionNode(
-                (v, c) => SetVariable(LanguageModule.ToString(input, context).StringValue, v, context)
+                (v, c) => SetVariable(LanguageModule.ToString(input, context).StringValue, v, context),
+                false, false
             )
             { Parameter = new VariableNode("right") };
 

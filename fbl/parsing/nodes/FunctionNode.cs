@@ -15,17 +15,21 @@ namespace FBL.Parsing.Nodes
         /// </summary>
         public ExpressionNode Code { get; set; }
 
-
         public Func<ExpressionNode, Context, ExpressionNode> Function { get; set; }
 
+        public bool CheckedPure { get; set; } = false;
+        public bool IsPureIn { get; set; } = false;
+        public bool IsPureOut { get; set; } = false;
 
-        public FunctionNode()
-        {
-        }
 
-        public FunctionNode(Func<ExpressionNode, Context, ExpressionNode> import)
+        public FunctionNode() { }
+
+        public FunctionNode(Func<ExpressionNode, Context, ExpressionNode> import, bool isPureIn, bool isPureOut)
         {
             this.Function = import;
+            this.CheckedPure = true;
+            this.IsPureIn = isPureIn;
+            this.IsPureOut = isPureOut;
         }
 
         /// <summary>
@@ -63,6 +67,11 @@ namespace FBL.Parsing.Nodes
             }
 
             return false;
+        }
+
+        public override string ToCodeString(int depth)
+        {
+            return $"([ {Parameter.Name} ] {Code.ToCodeString(depth + 1)})";
         }
     }
 }

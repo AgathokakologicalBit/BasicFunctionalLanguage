@@ -11,7 +11,7 @@
     : set "__$setter" set
     : set "__$getter" get
 
-    ( set "__types" [ action ]
+    : ( set "__types" [ action ]
         if (equals action <-)
             ([ name ] __$setter (+ "__$t_" name))
         (if (equals action ->)

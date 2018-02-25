@@ -46,5 +46,11 @@ namespace FBL.Parsing.Nodes
 
             return false;
         }
+
+        public override string ToCodeString(int depth)
+        {
+            var value = StringValue.Replace(@"\", @"\\").Replace("\t", @"\t").Replace("\n", @"\n");
+            return $"\"{value}\"";
+        }
     }
 }

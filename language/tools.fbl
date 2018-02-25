@@ -1,6 +1,4 @@
 : include "core.fbl"
-: include "array.fbl"
-: include "pair.fbl"
 
 
 ` Convertion tools
