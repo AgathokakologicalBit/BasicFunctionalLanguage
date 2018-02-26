@@ -1,4 +1,5 @@
-﻿using FBL.Parsing.Nodes;
+﻿using FBL.Interpretation;
+using FBL.Parsing.Nodes;
 using System;
 
 namespace FBL.Parsing
@@ -11,12 +12,14 @@ namespace FBL.Parsing
             ExpressionNode value;
 
             int lastIndex = state.Index;
-            while ((value = ExpressionParser.Parse(state)) != null && !state.IsErrorOccured())
+            var globalContext = new Context(null);
+            while ((value = ExpressionParser.Parse(state, globalContext)) != null && !state.IsErrorOccured())
             {
                 if (lastIndex == state.Index)
                     break;
 
                 lastIndex = state.Index;
+                value.Context = globalContext;
                 node.Code = value;
 
                 if (state.Index + 1 < state.Tokens.Count && !state.IsErrorOccured())

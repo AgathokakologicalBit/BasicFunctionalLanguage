@@ -10,6 +10,8 @@ namespace FBL.Interpretation
         public Dictionary<string, ExpressionNode> Values;
         public long LastVisitedAt = -1;
 
+        public bool IsDeterministic = true;
+
 
         public Context(Context context)
         {
