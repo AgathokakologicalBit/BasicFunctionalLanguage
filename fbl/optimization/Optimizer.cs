@@ -5,7 +5,6 @@ using FBL.Tokenization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace FBL.Optimization
 {
@@ -32,7 +31,7 @@ namespace FBL.Optimization
             };
             dependencyGraph.Add("<INITIAL>", new HashSet<string>());
 
-            var combined = new BlockNode();
+            BlockNode combined;
             bool anyOptimized;
 
             do
@@ -40,7 +39,7 @@ namespace FBL.Optimization
                 anyOptimized = false;
                 newDependencies = false;
 
-                combined = new BlockNode();
+                combined = new BlockNode() { Context = code.Code.Context };
                 foreach (var c in codes)
                     combined.Code.Add(c.Value.Code);
 
@@ -58,8 +57,8 @@ namespace FBL.Optimization
                     }
                 }
             } while (anyOptimized || newDependencies);
-            
-            combined = new BlockNode();
+
+            combined = new BlockNode() { Context = code.Code.Context };
             foreach (var ins in Sort(codes.Keys, x => dependencyGraph[x]))
             {
                 var c = codes[ins].Code;
@@ -162,7 +161,7 @@ namespace FBL.Optimization
 
             if (ast?.Code == null)
                 throw new InvalidProgramException("Can not generate AST for given file");
-            
+
             codes.Add(path, ast);
             newDependencies = true;
 
@@ -171,7 +170,7 @@ namespace FBL.Optimization
 
         public static ExpressionNode MakePass(BlockNode node)
         {
-            var newNode = new BlockNode();
+            var newNode = new BlockNode() { Context = node.Context };
             bool anyChanges = false;
             foreach (var line in node.Code)
             {
@@ -208,7 +207,7 @@ namespace FBL.Optimization
                 && cf.CheckedPure && cf.IsPureIn && cf.IsPureOut
                 && (argument is NumberNode || argument is StringNode))
             {
-                return cf.Function(argument, new Context(null));
+                return cf.Function(argument, node.Context);
             }
 
             return result;

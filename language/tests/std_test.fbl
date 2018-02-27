@@ -37,11 +37,11 @@
             : assert_equals 5 (d -> "length")        "enumeration from 9 to -1 with step -2 exclusive has 5 elements"
             : assert_equals "97531" (reduce + "" d)  "enumeration from 9 to -1 with step -2 is '97531'"
 
-            : set "e" (enumerate 0 500 1)
-            : assert_equals 500 (e -> "length")      "big arrays from enumeration (100 elements)"
-            : set "em" (map (+ " ") e)
-            : assert_equals 500 (e -> "length")      "big arrays mapping (100 elements)"
-            : set "es" (reduce + "array: [" em)
+            ` : set "e" (enumerate 0 500 1)
+            ` : assert_equals 500 (e -> "length")      "big arrays from enumeration (100 elements)"
+            ` : set "em" (map (+ " ") e)
+            ` : assert_equals 500 (e -> "length")      "big arrays mapping (100 elements)"
+            ` : set "es" (reduce + "array: [" em)
         )
 
         : describe "pair" ([ --- ]

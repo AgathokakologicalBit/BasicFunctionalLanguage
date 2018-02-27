@@ -48,6 +48,8 @@ namespace FBL
 
             watch.Start();
             var ast = Parser.Parse(tokens);
+            var interpreter = new Interpreter(ast.Code.Context);
+            interpreter.AddModule(new LanguageModule());
             ast = Optimizer.Optimize(ast);
             watch.Stop();
 
@@ -60,8 +62,7 @@ namespace FBL
             }
 
             Console.WriteLine("\n\n===---  INTERPRETATION   ---===");
-            var interpreter = new Interpreter();
-            interpreter.AddModule(new LanguageModule());
+            
 
             try
             {

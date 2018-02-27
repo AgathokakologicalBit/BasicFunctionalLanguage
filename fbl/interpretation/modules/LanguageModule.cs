@@ -23,91 +23,76 @@ namespace FBL.Interpretation.Modules
             this.interpreter = interpreter;
             var context = interpreter.GetGlobalContext();
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "import",
-                new FunctionNode(Import, false, false) { Parameter = new VariableNode("module") },
-                context
+                new FunctionNode(Import, false, false) { Parameter = new VariableNode("module") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "include",
-                new FunctionNode(Include, false, false) { Parameter = new VariableNode("filename") },
-                context
+                new FunctionNode(Include, false, false) { Parameter = new VariableNode("filename") }
             );
 
             // TODO: Temporary
-            interpreter.SetVariable(
+            context.SetVariable(
                 "input",
-                new FunctionNode(Input, true, true) { Parameter = new VariableNode("type") },
-                context
+                new FunctionNode(Input, true, true) { Parameter = new VariableNode("type") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "print",
-                new FunctionNode(Print, false, true) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(Print, false, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "puts",
-                PutsFunctionNode = new FunctionNode(Puts, false, true) { Parameter = new VariableNode("value") },
-                context
+                PutsFunctionNode = new FunctionNode(Puts, false, true) { Parameter = new VariableNode("value") }
             );
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "int",
-                new FunctionNode(ToInt, true, true) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToInt, true, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "number",
-                new FunctionNode(ToNumber, true, true) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToNumber, true, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "string",
-                new FunctionNode(ToString, true, true) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToString, true, true) { Parameter = new VariableNode("value") }
             );
 
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "abs",
-                new FunctionNode(NumberAbsolute, true, true) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(NumberAbsolute, true, true) { Parameter = new VariableNode("value") }
             );
 
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "+",
-                new FunctionNode(Add, true, true) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(Add, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "-",
-                new FunctionNode(NumbersSub, true, true) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersSub, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "*",
-                new FunctionNode(NumbersMul, true, true) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersMul, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "/",
-                new FunctionNode(NumbersDiv, true, true) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersDiv, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "%",
-                new FunctionNode(NumbersMod, true, true) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersMod, true, true) { Parameter = new VariableNode("left") }
             );
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "if",
                 new FunctionNode(IfExpression, true, true)
-                { Parameter = new VariableNode("condition") },
-                context
+                { Parameter = new VariableNode("condition") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "equals",
                 new FunctionNode(
                     (a, c1) => new FunctionNode(
@@ -115,8 +100,7 @@ namespace FBL.Interpretation.Modules
                         false, true
                     )
                     { Parameter = new VariableNode("right") }, false, true)
-                { Parameter = new VariableNode("left") },
-                context
+                { Parameter = new VariableNode("left") }
             );
         }
 
