@@ -13,11 +13,15 @@ namespace FBL.Interpretation
         public Interpreter(Context context)
         {
             globalContext = context;
+
+            globalContext.Values["get"].Context = globalContext;
+            globalContext.Values["set"].Context = globalContext;
         }
 
 
         public ExpressionNode Run(CoreNode program)
         {
+            program.Code.Context = globalContext;
             return Evaluate((dynamic)program.Code, globalContext);
         }
 
@@ -66,11 +70,14 @@ namespace FBL.Interpretation
                 ExpressionNode right = Evaluate((dynamic)node.Argument, context);
 
                 if (leftFunc.Function != null)
-                    return leftFunc.Function(right, context);
-                
+                    return leftFunc.Function(right, leftFunc.Context);
+
                 var subContext = leftFunc.Context.Clone();
                 // subContext.Parent = context;
                 subContext.Values[leftFunc.Parameter.Name] = right;
+
+                subContext.Values["get"].Context = subContext;
+                subContext.Values["set"].Context = subContext;
 
                 return Evaluate((dynamic)leftFunc.Code, subContext);
             }
