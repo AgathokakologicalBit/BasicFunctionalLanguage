@@ -23,99 +23,84 @@ namespace FBL.Interpretation.Modules
             this.interpreter = interpreter;
             var context = interpreter.GetGlobalContext();
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "import",
-                new FunctionNode(Import) { Parameter = new VariableNode("module") },
-                context
+                new FunctionNode(Import, false, false) { Parameter = new VariableNode("module") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "include",
-                new FunctionNode(Include) { Parameter = new VariableNode("filename") },
-                context
+                new FunctionNode(Include, false, false) { Parameter = new VariableNode("filename") }
             );
 
             // TODO: Temporary
-            interpreter.SetVariable(
+            context.SetVariable(
                 "input",
-                new FunctionNode(Input) { Parameter = new VariableNode("type") },
-                context
+                new FunctionNode(Input, true, true) { Parameter = new VariableNode("type") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "print",
-                new FunctionNode(Print) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(Print, false, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "puts",
-                PutsFunctionNode = new FunctionNode(Puts) { Parameter = new VariableNode("value") },
-                context
+                PutsFunctionNode = new FunctionNode(Puts, false, true) { Parameter = new VariableNode("value") }
             );
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "int",
-                new FunctionNode(ToInt) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToInt, true, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "number",
-                new FunctionNode(ToNumber) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToNumber, true, true) { Parameter = new VariableNode("value") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "string",
-                new FunctionNode(ToString) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(ToString, true, true) { Parameter = new VariableNode("value") }
             );
 
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "abs",
-                new FunctionNode(NumberAbsolute) { Parameter = new VariableNode("value") },
-                context
+                new FunctionNode(NumberAbsolute, true, true) { Parameter = new VariableNode("value") }
             );
 
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "+",
-                new FunctionNode(Add) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(Add, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "-",
-                new FunctionNode(NumbersSub) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersSub, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "*",
-                new FunctionNode(NumbersMul) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersMul, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "/",
-                new FunctionNode(NumbersDiv) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersDiv, true, true) { Parameter = new VariableNode("left") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "%",
-                new FunctionNode(NumbersMod) { Parameter = new VariableNode("left") },
-                context
+                new FunctionNode(NumbersMod, true, true) { Parameter = new VariableNode("left") }
             );
 
-            interpreter.SetVariable(
+            context.SetVariable(
                 "if",
-                new FunctionNode(IfExpression)
-                { Parameter = new VariableNode("condition") },
-                context
+                new FunctionNode(IfExpression, true, true)
+                { Parameter = new VariableNode("condition") }
             );
-            interpreter.SetVariable(
+            context.SetVariable(
                 "equals",
                 new FunctionNode(
                     (a, c1) => new FunctionNode(
-                        (b, c2) => new NumberNode(a.DeepEquals(b, NextVisitId++) ? 1 : 0)
+                        (b, c2) => new NumberNode(a.DeepEquals(b, NextVisitId++) ? 1 : 0),
+                        false, true
                     )
-                    { Parameter = new VariableNode("right") })
-                { Parameter = new VariableNode("left") },
-                context
+                    { Parameter = new VariableNode("right") }, false, true)
+                { Parameter = new VariableNode("left") }
             );
         }
 
@@ -148,8 +133,8 @@ namespace FBL.Interpretation.Modules
         ExpressionNode IfExpression(ExpressionNode condition, Context context)
             => new FunctionNode((ExpressionNode onTrue, Context context_true)
                 => new FunctionNode((ExpressionNode onFalse, Context context_false)
-                    => ToNumber(condition, context).NumericValue == 0 ? onFalse : onTrue)
-                { Parameter = new VariableNode("on_false") })
+                    => ToNumber(condition, context).NumericValue == 0 ? onFalse : onTrue, true, true)
+                { Parameter = new VariableNode("on_false") }, true, true)
             { Parameter = new VariableNode("on_true") };
 
         ExpressionNode Input(ExpressionNode type, Context context)
@@ -207,7 +192,7 @@ namespace FBL.Interpretation.Modules
                     }
 
                     return new StringNode(left.ToString() + right.ToString(), false);
-                }
+                }, true, true
             )
             { Parameter = new VariableNode("right") };
         }
@@ -218,7 +203,7 @@ namespace FBL.Interpretation.Modules
                 (right, c) => new NumberNode(
                        ToNumber(left, c).NumericValue
                      - ToNumber(right, c).NumericValue
-                    )
+                    ), true, true
             )
             { Parameter = new VariableNode("right") };
         }
@@ -229,7 +214,7 @@ namespace FBL.Interpretation.Modules
                 (right, c) => new NumberNode(
                        ToNumber(left, c).NumericValue
                      * ToNumber(right, c).NumericValue
-                    )
+                    ), true, true
             )
             { Parameter = new VariableNode("right") };
         }
@@ -240,7 +225,7 @@ namespace FBL.Interpretation.Modules
                 (right, c) => new NumberNode(
                        ToNumber(left, c).NumericValue
                      / ToNumber(right, c).NumericValue
-                    )
+                    ), true, true
             )
             { Parameter = new VariableNode("right") };
         }
@@ -251,7 +236,7 @@ namespace FBL.Interpretation.Modules
                 (right, c) => new NumberNode(
                        ToNumber(left, c).NumericValue
                      % ToNumber(right, c).NumericValue
-                    )
+                    ), true, true
             )
             { Parameter = new VariableNode("right") };
         }

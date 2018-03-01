@@ -1,4 +1,6 @@
-﻿using FBL.Parsing.Nodes;
+﻿using FBL.Interpretation;
+using FBL.Parsing.Nodes;
+using System;
 
 namespace FBL.Parsing
 {
@@ -7,16 +9,25 @@ namespace FBL.Parsing
         public static CoreNode Parse(Parser.State state)
         {
             var node = new CoreNode();
-            Node value;
+            ExpressionNode value;
 
             int lastIndex = state.Index;
-            while ((value = ExpressionParser.Parse(state)) != null && !state.IsErrorOccured())
+            var globalContext = new Context();
+            while ((value = ExpressionParser.Parse(state, globalContext)) != null && !state.IsErrorOccured())
             {
                 if (lastIndex == state.Index)
                     break;
 
                 lastIndex = state.Index;
-                node.code.Add(value);
+                value.Context = globalContext;
+                node.Code = value;
+
+                if (state.Index + 1 < state.Tokens.Count && !state.IsErrorOccured())
+                {
+                    Console.WriteLine($"{state.Index} / {state.Tokens.Count}");
+                    state.ErrorCode = (uint)ErrorCodes.T_UnexpectedEndOfFile;
+                    state.ErrorMessage = "Something really wrong happend";
+                }
             }
 
             return node;

@@ -10,13 +10,13 @@
 
     : declare_property "raw" ([ getter ] getter true void void)
     
-    : declare_property "top"  void
+    : declare_property "top"
 
-    : declare_property "push" void
-    : declare_property "pop"  void
+    : declare_property "push"
+    : declare_property "pop"
 
     ` Special operators
-    : declare_property << void  ` Alias for 'push'
+    : declare_property <<  ` Alias for 'push'
 ))
 
 ` Standard constructor

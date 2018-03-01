@@ -1,11 +1,9 @@
-: include "core.fbl"
-: include "tools.fbl"
-: include "testing.fbl"
-
 : include "tests/language_test.fbl"
 : include "tests/std_test.fbl"
 : include "tests/types_test.fbl"
 
+` : set "print" void
+` : set "puts" void
 
 : (set "main" [ args ]
     : run functions_tests

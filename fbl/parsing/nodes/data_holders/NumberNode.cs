@@ -30,5 +30,10 @@ namespace FBL.Parsing.Nodes
 
             return false;
         }
+
+        public override string ToCodeString(int depth)
+        {
+            return NumericValue.ToString(CultureInfo.InvariantCulture);
+        }
     }
 }

@@ -11,7 +11,7 @@
     : set "__$setter" set
     : set "__$getter" get
 
-    ( set "__types" [ action ]
+    : ( set "__types" [ action ]
         if (equals action <-)
             ([ name ] __$setter (+ "__$t_" name))
         (if (equals action ->)
@@ -62,15 +62,14 @@
                 )
         ))
 
-
-        : __$type_set (+ "__$type_val_" 0) __$object_set_u
-        : __$type_set (+ "__$type_val_" 1) __$object_get_u
-
         : loop __$type_props_count ([ property_index ]
             : __$object_set_u
                 (__$type_get (+ "__$type_var_" property_index))
                 (__$type_get (+ "__$type_val_" property_index))
         )
+        : __$object_set_u (__$type_get (+ "__$type_var_" 0)) __$object_set_u
+        : __$object_set_u (__$type_get (+ "__$type_var_" 1)) __$object_get_u
+        
 
         : (([ object ] constructor object : object)
             ([ action ] run (

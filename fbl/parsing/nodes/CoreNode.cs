@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
-
-namespace FBL.Parsing.Nodes
+﻿namespace FBL.Parsing.Nodes
 {
     public class CoreNode : Node
     {
-        public List<Node> code = new List<Node>(100);
+        public ExpressionNode Code = null;
 
         public override string ToString()
         {
-            return string.Join("\n\n", code);
+            return Code.ToString();
+        }
+
+        public override string ToCodeString(int depth)
+        {
+            return Code.ToCodeString(0);
         }
     }
 }

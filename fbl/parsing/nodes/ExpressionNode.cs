@@ -20,5 +20,7 @@ namespace FBL.Parsing.Nodes
         {
             return this == b;
         }
+
+        public override string ToCodeString(int depth) { return "#%@#^INVALID WTF#(%!?!?#%&@"; }
     }
 }

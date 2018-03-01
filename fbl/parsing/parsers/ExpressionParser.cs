@@ -1,11 +1,12 @@
-﻿using FBL.Parsing.Nodes;
+﻿using FBL.Interpretation;
+using FBL.Parsing.Nodes;
 using FBL.Tokenization;
 
 namespace FBL.Parsing
 {
     public static class ExpressionParser
     {
-        public static ExpressionNode Parse(Parser.State state)
+        public static ExpressionNode Parse(Parser.State state, Context context)
         {
             if (state.IsErrorOccured() || state.GetToken().Is(TokenType.EOF))
                 return null;
@@ -18,14 +19,14 @@ namespace FBL.Parsing
                     state.GetNextNeToken();
 
 
-                var unit = ParseUnit(state);
+                var unit = ParseUnit(state, context);
                 FunctionCallNode fc_unit;
 
                 if (unit == null || state.IsErrorOccured()) break;
 
                 while (!state.IsErrorOccured()
                     && !state.GetToken().Is(TokenType.EOF)
-                    && (fc_unit = ParseFunctionCall(state, unit)) != null)
+                    && (fc_unit = ParseFunctionCall(state, unit, context)) != null)
                 {
                     unit = fc_unit;
                 }
@@ -36,7 +37,7 @@ namespace FBL.Parsing
             return block;
         }
 
-        private static ExpressionNode ParseUnit(Parser.State state)
+        private static ExpressionNode ParseUnit(Parser.State state, Context context)
         {
             if (state.GetToken().Is(TokenSubType.BraceSquareLeft))
             {
@@ -47,17 +48,20 @@ namespace FBL.Parsing
                 if (state.IsErrorOccured())
                     return null;
 
-                func.Code = Parse(state);
+                var subContext = new Context(context, context.Values);
+                func.Code = Parse(state, subContext);
+                func.Context = subContext;
+
                 if (state.IsErrorOccured())
                     return null;
 
                 return func;
             }
 
-            return ParseValue(state);
+            return ParseValue(state, context);
         }
 
-        private static ExpressionNode ParseValue(Parser.State state)
+        private static ExpressionNode ParseValue(Parser.State state, Context context)
         {
             state.Save();
             var token = state.GetTokenAndMoveNe();
@@ -82,7 +86,7 @@ namespace FBL.Parsing
             else if (token.Is(TokenSubType.BraceRoundLeft))
             {
                 state.Drop();
-                var node = Parse(state);
+                var node = Parse(state, context);
                 if (state.IsErrorOccured())
                     return node;
 
@@ -103,14 +107,14 @@ namespace FBL.Parsing
             return null;
         }
 
-        internal static FunctionCallNode ParseFunctionCall(Parser.State state, ExpressionNode func)
+        internal static FunctionCallNode ParseFunctionCall(Parser.State state, ExpressionNode func, Context context)
         {
             var call = new FunctionCallNode
             {
                 CalleeExpression = func
             };
 
-            ExpressionNode arg = ParseUnit(state);
+            ExpressionNode arg = ParseUnit(state, context);
             if (state.IsErrorOccured() || arg == null)
                 return null;
 

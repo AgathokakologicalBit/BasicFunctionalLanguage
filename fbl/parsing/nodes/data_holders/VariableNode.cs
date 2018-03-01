@@ -21,7 +21,12 @@
         /// <returns>Formatted string</returns>
         public override string ToString()
         {
-            return $"{Name}";
+            return Name;
+        }
+
+        public override string ToCodeString(int depth)
+        {
+            return Name;
         }
     }
 }
