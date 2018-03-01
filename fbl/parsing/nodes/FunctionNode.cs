@@ -60,10 +60,10 @@ namespace FBL.Parsing.Nodes
 
             if (b is FunctionNode bf)
             {
-                return ToString() == bf.ToString()
-                    && (Context?.LastVisitedAt == visitId
+                return Code == bf.Code
+                    && (Context.LastVisitedAt == visitId
                     || Context == bf.Context
-                    || (Context?.DeepEquals(bf.Context, visitId) ?? false));
+                    || Context.DeepEquals(bf.Context, visitId));
             }
 
             return false;
