@@ -48,6 +48,7 @@
             : set "p" (PairOf "a" "b")
             : set "q" (PairOf "b" "a")
 
+            : assert_equals "Pair" (typeof p "name") "typeof (a, b) == 'Pair'"
             : assert_equals false (equals (p <-) (q <-)) "`=` operator is different for pair instances"
 
             : assert_equals "a" (p "first")    "(a, b).first == a"

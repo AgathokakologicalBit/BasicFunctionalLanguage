@@ -7,7 +7,7 @@
 : (set "Nothing" void )
 
 : (set "from_just" [ mb ]
-    mb ([ value ] value)
+    mb id
 )
 
 : (set "is_nothing" [ mb ]
@@ -29,5 +29,5 @@
 )
 
 : (set ">>=" [ transform ] [ mb ]
-    maybe Nothing (comp Just transform) mb
+    maybe Nothing (compose Just transform) mb
 )
