@@ -1,33 +1,43 @@
+: include "core.fbl"
 : include "tools.fbl"
 
-: (set "Just" [ value ] 
-    [ getter ] getter value
+
+: set "MaybeType" (Type "Maybe" [ declare_property ]
+    : declare_property "value"
+
+    : declare_property "is_nothing" true
+    : declare_property "is_just" false
+
+    : declare_property >>=
 )
 
-: (set "Nothing" void )
+: set "Nothing" ([ --- ] MaybeType [ self ]
+    : self <- >>= ([ function ]
+        if (self "is_nothing") ([ --- ] default Nothing) function
+            self
+    )
 
-: (set "from_just" [ mb ]
-    mb id
+    : self <- <- void
 )
 
-: (set "is_nothing" [ mb ]
-    equals mb Nothing
+: set "Just" ([ value ] MaybeType [ self ]
+    : self <- "value" value
+    : self <- "is_nothing" false
+    : self <- "is_just" true
+
+    : self <- >>= ([ function ]
+        if (self "is_nothing") ([ --- ] default Nothing) function
+            self
+    )
+
+    : self <- <- void
 )
 
-: (set "is_just" [ mb ]
-    not (is_nothing mb)
-)
+: (set "maybe" [ default ] [ transform ] [ mb ] run (
+    if (mb "is_just")
+        ([ --- ] transform mb)
+        ([ --- ] default)
+))
 
-: (set "maybe" [ default ] [ transform ] [ mb ]
-    if (is_just mb)
-        (mb transform)
-        default
-)
+: (set "from_maybe" [ default ] [ mb ] maybe default id mb )
 
-: (set "from_maybe" [ default ] [ mb ]
-    maybe default id mb
-)
-
-: (set ">>=" [ transform ] [ mb ]
-    maybe Nothing (compose Just transform) mb
-)

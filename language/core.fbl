@@ -3,6 +3,7 @@
 
 : ( set "void" [ --- ] void )
 : ( set "run" [ function ] function void )
+: ( set "id" [ value ] value )
 
 
 : ( set "__equals" equals )

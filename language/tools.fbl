@@ -16,7 +16,6 @@
 
 
 ` Utility functions
-: ( set "id" [ value ] value )
 : ( set "compose" [ f ] [ g ] [ arg ] f ( g arg ))
 : ( set "@" compose )
 : ( set "arg_swap" [ function ] [ a ] [ b ] function b a )

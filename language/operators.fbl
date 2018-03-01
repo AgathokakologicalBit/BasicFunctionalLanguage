@@ -8,3 +8,5 @@
 : set ">>>" "$op_move_l_right"
 
 : set "<>" "$op_left_right"
+
+: set ">>=" "$op_pipe_optional"

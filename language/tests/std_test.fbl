@@ -1,7 +1,10 @@
 : include "core.fbl"
 : include "tools.fbl"
+
 : include "array.fbl"
 : include "pair.fbl"
+: include "maybe.fbl"
+
 : include "testing.fbl"
 
 
@@ -67,6 +70,23 @@
 
             : assert_equals "b" (_gfu p)       "uncurry ([a][b] a) (b, a) == b"
             : assert_equals "a" (_gfc "a" "b") "curry ([p] p.first) a b == b"
+        )
+
+        : describe "maybe" ([ --- ]
+            : set "x" (Just 5)
+            : set "y" (Just 7)
+            : set "z" (default Nothing)
+
+            : assert_equals "Maybe" (typeof x "name")  "typeof (Just a) == 'Maybe'"
+            : assert_equals 5 (x "value")              "(Just a).value == a"
+            : assert_equals void (z "value")           "(Nothing).value == void"
+
+            : set "pipe_a" ([ x ] maybe (default Nothing) ([ v ] Just (string (x "value"))) x )
+            : set "pipe_b" ([ x ] maybe (default Nothing) ([ v ] Just (+ (v "value") 1)) x )
+
+            : assert_equals "6" (x >>= pipe_b >>= pipe_a "value") "Just 5 >>= (+ 1) >>= string  ==  Just '6'"
+            : assert_equals (Just "51") (x >>= pipe_a >>= pipe_b) "Just 5 >>= string >>= (+ 1) ==  Just '51'"
+            : assert_equals (default Nothing) (z >>= pipe_a >>= pipe_b) "Nothing >>= (+ 1) >>= string == Nothing"
         )
     )
 )
