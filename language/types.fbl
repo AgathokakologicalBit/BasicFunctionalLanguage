@@ -79,7 +79,7 @@
             ([ action ] run (
                 if (equals action "__type")
                     ([ --- ] __types -> name)
-                    ([ --- ] puts "\nObject '" __$type_name "'. Instance: " __$object_instance_id "\n" : __$object_get_u action)
+                    ([ --- ] __$object_get_u action)
             ))
         )
     )

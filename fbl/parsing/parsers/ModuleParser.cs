@@ -12,7 +12,7 @@ namespace FBL.Parsing
             ExpressionNode value;
 
             int lastIndex = state.Index;
-            var globalContext = new Context(null);
+            var globalContext = new Context();
             while ((value = ExpressionParser.Parse(state, globalContext)) != null && !state.IsErrorOccured())
             {
                 if (lastIndex == state.Index)

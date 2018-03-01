@@ -48,7 +48,7 @@ namespace FBL.Parsing
                 if (state.IsErrorOccured())
                     return null;
 
-                var subContext = new Context(context);
+                var subContext = new Context(context, context.Values);
                 func.Code = Parse(state, subContext);
                 func.Context = subContext;
 

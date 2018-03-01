@@ -13,28 +13,24 @@ namespace FBL.Interpretation
 
         public bool IsDeterministic = true;
 
-        public Context()
-        {
-            this.Values = new Dictionary<string, ExpressionNode>()
-            {
-                { "set", new FunctionNode((i, c) => Set(i, c), false, false)
-                    { Parameter = new VariableNode("name"), Context = this } },
-                { "get", new FunctionNode((i, c) => Get(i, c), false, false)
-                    { Parameter = new VariableNode("name"), Context = this } },
-            };
-        }
+        public Context() : this(null, new Dictionary<string, ExpressionNode>())
+        { }
 
-        public Context(Context context) : this()
+        public Context(Context context, Dictionary<string, ExpressionNode> values)
         {
             this.Parent = context;
+            this.Values = new Dictionary<string, ExpressionNode>(values)
+            {
+                ["set"] = new FunctionNode((i, c) => Set(i, c), false, false)
+                    { Parameter = new VariableNode("name"), Context = this },
+
+                ["get"] = new FunctionNode((i, c) => Get(i, c), false, false)
+                    { Parameter = new VariableNode("name"), Context = this }
+            };
         }
 
         public Context Clone()
-            => new Context(Parent)
-            {
-                Values = new Dictionary<string, ExpressionNode>(Values),
-                IsDeterministic = IsDeterministic
-            };
+            => new Context(Parent, Values) { IsDeterministic = IsDeterministic };
 
 
         public ExpressionNode SetVariable(string name, ExpressionNode value)

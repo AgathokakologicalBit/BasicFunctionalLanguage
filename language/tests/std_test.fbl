@@ -46,10 +46,9 @@
 
         : describe "pair" ([ --- ]
             : set "p" (PairOf "a" "b")
-            : ppair p
             : set "q" (PairOf "b" "a")
-            : ppair p
-            : ppair q
+
+            : assert_equals false (equals (p <-) (q <-)) "`=` operator is different for pair instances"
 
             : assert_equals "a" (p "first")    "(a, b).first == a"
             : assert_equals "b" (p "second")   "(a, b).second == b"

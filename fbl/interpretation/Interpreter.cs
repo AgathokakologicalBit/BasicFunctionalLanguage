@@ -6,7 +6,7 @@ namespace FBL.Interpretation
 {
     public partial class Interpreter
     {
-        private Context globalContext = new Context(null);
+        private Context globalContext = new Context();
         private List<IModule> loadedModules = new List<IModule>();
 
 
