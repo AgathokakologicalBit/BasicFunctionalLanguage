@@ -80,15 +80,15 @@ namespace FBL.Interpretation
 
         public bool DeepEquals(Context c, long visitId)
         {
+            if (LastVisitedAt == visitId)
+                return true;
+
             LastVisitedAt = visitId;
 
             if (this == c)
                 return true;
-
-            if (c == null)
-                return false;
-
-            if (Values.Count != c.Values.Count)
+            
+            if (Values.Count != c?.Values.Count)
                 return false;
 
             return Values.All(v => c.Values.ContainsKey(v.Key) && v.Value.DeepEquals(c.Values[v.Key], visitId))

@@ -27,7 +27,6 @@
     : set "__$type_set" set
     : set "__$type_get" get
     : set "__$type_props_count" 0
-    : set "__$instances_count" 0
 
     : set "__$type_add_prop" ( [ name ]
         : __$type_set (+ "__$type_var_" __$type_props_count) name
@@ -43,9 +42,6 @@
 
     ` We should return the type instantiator (object constructor)
     : set "__$type_constructor" ([ constructor ]
-        : set "__$instances_count" (+ __$instances_count 1)
-        : set "__$object_instance_id" __$instances_count
-
         : set "__$object_set" set
         : set "__$object_get" get
 
