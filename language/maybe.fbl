@@ -11,9 +11,9 @@
     : declare_property >>=
 )
 
-: set "Nothing" ([ --- ] MaybeType [ self ]
+: set "Nothing" (MaybeType [ self ]
     : self <- >>= ([ function ]
-        if (self "is_nothing") ([ --- ] default Nothing) function
+        if (self "is_nothing") ([ --- ] Nothing) function
             self
     )
 
@@ -26,7 +26,7 @@
     : self <- "is_just" true
 
     : self <- >>= ([ function ]
-        if (self "is_nothing") ([ --- ] default Nothing) function
+        if (self "is_nothing") ([ --- ] Nothing) function
             self
     )
 
@@ -35,7 +35,7 @@
 
 : (set "maybe" [ default ] [ transform ] [ mb ] run (
     if (mb "is_just")
-        ([ --- ] transform mb)
+        ([ --- ] transform (mb "value"))
         ([ --- ] default)
 ))
 

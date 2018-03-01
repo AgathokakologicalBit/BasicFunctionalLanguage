@@ -75,18 +75,18 @@
         : describe "maybe" ([ --- ]
             : set "x" (Just 5)
             : set "y" (Just 7)
-            : set "z" (default Nothing)
+            : set "z" (Nothing)
 
             : assert_equals "Maybe" (typeof x "name")  "typeof (Just a) == 'Maybe'"
             : assert_equals 5 (x "value")              "(Just a).value == a"
             : assert_equals void (z "value")           "(Nothing).value == void"
 
-            : set "pipe_a" ([ x ] maybe (default Nothing) ([ v ] Just (string (x "value"))) x )
-            : set "pipe_b" ([ x ] maybe (default Nothing) ([ v ] Just (+ (v "value") 1)) x )
+            : set "pipe_a" ([ x ] maybe Nothing (@ Just string) x )
+            : set "pipe_b" ([ x ] maybe Nothing (@ Just (+ 1)) x )
 
-            : assert_equals "6" (x >>= pipe_b >>= pipe_a "value") "Just 5 >>= (+ 1) >>= string  ==  Just '6'"
-            : assert_equals (Just "51") (x >>= pipe_a >>= pipe_b) "Just 5 >>= string >>= (+ 1) ==  Just '51'"
-            : assert_equals (default Nothing) (z >>= pipe_a >>= pipe_b) "Nothing >>= (+ 1) >>= string == Nothing"
+            : assert_equals (Just "6") (x >>= pipe_b >>= pipe_a)  "Just 5 >>= (+ 1) >>= string  ==  Just '6'"
+            : assert_equals (Just "15") (x >>= pipe_a >>= pipe_b) "Just 5 >>= string >>= (+ 1) ==  Just '15'"
+            : assert_equals Nothing (z >>= pipe_a >>= pipe_b)     "Nothing >>= (+ 1) >>= string == Nothing"
         )
     )
 )
