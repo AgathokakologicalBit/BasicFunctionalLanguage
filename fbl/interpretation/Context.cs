@@ -22,10 +22,10 @@ namespace FBL.Interpretation
             this.Values = new Dictionary<string, ExpressionNode>(values)
             {
                 ["set"] = new FunctionNode((i, c) => Set(i, c), false, false)
-                    { Parameter = new VariableNode("name"), Context = this },
+                { Parameter = new VariableNode("name"), Context = this },
 
                 ["get"] = new FunctionNode((i, c) => Get(i, c), false, false)
-                    { Parameter = new VariableNode("name"), Context = this }
+                { Parameter = new VariableNode("name"), Context = this }
             };
         }
 
@@ -85,10 +85,14 @@ namespace FBL.Interpretation
             if (this == c)
                 return true;
 
+            if (c == null)
+                return false;
+
             if (Values.Count != c.Values.Count)
                 return false;
 
-            return Values.All(v => c.Values.ContainsKey(v.Key) && v.Value.DeepEquals(c.Values[v.Key], visitId));
+            return Values.All(v => c.Values.ContainsKey(v.Key) && v.Value.DeepEquals(c.Values[v.Key], visitId))
+                && ((Parent == null && c.Parent == null) || Parent.DeepEquals(c.Parent, visitId));
         }
     }
 }
