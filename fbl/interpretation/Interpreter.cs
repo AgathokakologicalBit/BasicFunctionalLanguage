@@ -76,9 +76,6 @@ namespace FBL.Interpretation
                 // subContext.Parent = context;
                 subContext.Values[leftFunc.Parameter.Name] = right;
 
-                subContext.Values["get"].Context = subContext;
-                subContext.Values["set"].Context = subContext;
-
                 return Evaluate((dynamic)leftFunc.Code, subContext);
             }
 
