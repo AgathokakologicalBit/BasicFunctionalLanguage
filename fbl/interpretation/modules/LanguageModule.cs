@@ -24,10 +24,6 @@ namespace FBL.Interpretation.Modules
             var context = interpreter.GetGlobalContext();
 
             context.SetVariable(
-                "import",
-                new FunctionNode(Import, false, false) { Parameter = new VariableNode("module") }
-            );
-            context.SetVariable(
                 "include",
                 new FunctionNode(Include, false, false) { Parameter = new VariableNode("filename") }
             );
@@ -59,6 +55,12 @@ namespace FBL.Interpretation.Modules
                 new FunctionNode(ToString, true, true) { Parameter = new VariableNode("value") }
             );
 
+            context.SetVariable(
+                "get_type",
+                new FunctionNode(
+                    (i, c) => new StringNode(i?.GetType().Name.Replace("Node", "").ToLower(), false), true, true)
+                { Parameter = new VariableNode("value") }
+            );
 
             context.SetVariable(
                 "abs",
@@ -102,12 +104,6 @@ namespace FBL.Interpretation.Modules
                     { Parameter = new VariableNode("right") }, false, true)
                 { Parameter = new VariableNode("left") }
             );
-        }
-
-        ExpressionNode Import(ExpressionNode input, Context context)
-        {
-            // TODO: Do something Oo
-            return new ExpressionNode();
         }
 
         ExpressionNode Include(ExpressionNode input, Context context)

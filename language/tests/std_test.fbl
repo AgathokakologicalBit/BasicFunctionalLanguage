@@ -81,8 +81,8 @@
             : assert_equals 5 (x "value")              "(Just a).value == a"
             : assert_equals void (z "value")           "(Nothing).value == void"
 
-            : set "pipe_a" ([ x ] maybe Nothing (@ Just string) x )
-            : set "pipe_b" ([ x ] maybe Nothing (@ Just (+ 1)) x )
+            : set "pipe_a" ([ x ] @ return string x )
+            : set "pipe_b" ([ x ] @ return (+ 1) x )
 
             : assert_equals (Just "6") (x >>= pipe_b >>= pipe_a)  "Just 5 >>= (+ 1) >>= string  ==  Just '6'"
             : assert_equals (Just "15") (x >>= pipe_a >>= pipe_b) "Just 5 >>= string >>= (+ 1) ==  Just '15'"

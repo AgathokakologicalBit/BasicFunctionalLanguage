@@ -12,10 +12,7 @@
 )
 
 : set "Nothing" (MaybeType [ self ]
-    : self <- >>= ([ function ]
-        if (self "is_nothing") ([ --- ] Nothing) function
-            self
-    )
+    : self <- >>= ([ function ] Nothing)
 
     : self <- <- void
 )
@@ -25,19 +22,17 @@
     : self <- "is_nothing" false
     : self <- "is_just" true
 
-    : self <- >>= ([ function ]
-        if (self "is_nothing") ([ --- ] Nothing) function
-            self
-    )
+    : self <- >>= ([ function ] @ function self "value")
 
     : self <- <- void
 )
 
-: (set "maybe" [ default ] [ transform ] [ mb ] run (
+: set "maybe" ( [ default ] [ transform ] [ mb ] run (
     if (mb "is_just")
-        ([ --- ] transform (mb "value"))
+        ([ --- ] @ transform mb "value")
         ([ --- ] default)
 ))
 
-: (set "from_maybe" [ default ] [ mb ] maybe default id mb )
+: set "from_maybe" ( [ default ] [ mb ] maybe default id mb )
 
+: set "return" ( [ value ] Just value )

@@ -26,13 +26,13 @@
 ))
 
 ` Printing
-: ( set "pbool" [ value ] print (bts value) )
+: ( set "pbool" [ value ] @ print bts value )
 
 ` Working with numbers
 : ( set "is_positive" [ number ] bool (+ number (abs number)) )
 : ( set "is_negative" [ number ] bool (- number (abs number)) )
 : ( set "is_zero"     [ number ] not (bool number) )
-: ( set "sign"        [ number ] - (bti (is_positive number)) (bti (is_negative number)) )
+: ( set "sign"        [ number ] - (@ bti is_positive number) (@ bti is_negative number) )
 
 : ( set "is_greater"  [ a ] [ b ] is_positive (- a b) )
 : ( set "is_less"     [ a ] [ b ] is_negative (- a b) )
@@ -45,10 +45,10 @@
         : (__if times   code void) (- from times)
         : (__if times __loop void) from (- times 1) code
     )
-    : run (if (is_positive times) ([ --- ] __loop (int times) (int times) code) id)
+    : run (@ if is_positive times ([ --- ] __loop (int times) (int times) code) id)
 )
 
 
 : ( set "while" [ condition ] [ code ]
-    : run (if (run condition) ([ --- ] run code : while condition code) void)
+    : run (@ if run condition ([ --- ] run code : while condition code) void)
 )
