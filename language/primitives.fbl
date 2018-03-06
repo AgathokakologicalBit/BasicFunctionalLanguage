@@ -1,14 +1,18 @@
 : include "core.fbl"
-: include "types.fbl"
 
 
-` : set "NullType" (Type "Null" [ declare_property ])
-: set "Null" (default (Type "Null" void))
+: set "#" ([ value ]
+    (if (equals (get_type value) "string") (String value))
+    (if (equals (get_type value) "number") (Number value))
+    (if (equals (get_type value) "function") (FunctionType value))
+)
 
+: set "NullType" (Type "Null" [ declare_property ])
 
 : set "NumberType"   (Type "Number"   [ dp ] dp "value" 0   )
 : set "StringType"   (Type "String"   [ dp ] dp "value" ""  )
 : set "FunctionType" (Type "Function" [ dp ] dp "value" void)
+
 
 : set "Number" ([ value ]
     if (equals (get_type value) "number")
@@ -28,8 +32,4 @@
         Null
 )
 
-: set "#" ([ value ]
-    (if (equals (get_type value) "string") (String value))
-    (if (equals (get_type value) "number") (Number value))
-    (if (equals (get_type value) "function") (FunctionType value))
-)
+: set "Null" (default NullType)

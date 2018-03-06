@@ -45,7 +45,7 @@
         : (__if times   code void) (- from times)
         : (__if times __loop void) from (- times 1) code
     )
-    : run (@ if is_positive times ([ --- ] __loop (int times) (int times) code) id)
+    : run (@ if is_positive times ([ --- ] __loop (int times) (int times) code) void)
 )
 
 

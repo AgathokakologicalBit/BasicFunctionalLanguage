@@ -1,7 +1,6 @@
 : include "core.fbl"
 : include "tools.fbl"
 
-: include "primitives.fbl"
 : include "array.fbl"
 : include "pair.fbl"
 : include "maybe.fbl"
