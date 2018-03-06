@@ -38,6 +38,7 @@
 
     : __$type_add_prop <-
     : __$type_add_prop ->
+    : __$type_add_prop "to_string"
     : describer __$type_add_prop
 
     ` We should return the type instantiator (object constructor)
@@ -69,7 +70,16 @@
         )
         : __$object_set_u (__$type_get (+ "__$type_var_" 0)) __$object_set_u
         : __$object_set_u (__$type_get (+ "__$type_var_" 1)) __$object_get_u
-        
+        : __$object_set_u (__$type_get (+ "__$type_var_" 2)) ([ --- ]
+            : set "__$_obj_str-repr" (+ __$type_name "{ ")
+            : loop (- __$type_props_count 3) ([ property_index ]
+                : set "__$_current-name" (__$type_get (+ "__$type_var_" (+ property_index 3)))
+                : set "__$_obj_str-repr" (+ __$_obj_str-repr __$_current-name)
+                : set "__$_obj_str-repr" (+ (+ __$_obj_str-repr ": ") (__$object_get_u __$_current-name))
+                : set "__$_obj_str-repr" (+ __$_obj_str-repr " ")  
+            )
+            : (+ __$_obj_str-repr "}")
+        )
 
         : (([ object ] constructor object : object)
             ([ action ] run (

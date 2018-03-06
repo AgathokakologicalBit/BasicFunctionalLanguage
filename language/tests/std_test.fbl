@@ -1,6 +1,7 @@
 : include "core.fbl"
 : include "tools.fbl"
 
+: include "primitives.fbl"
 : include "array.fbl"
 : include "pair.fbl"
 : include "maybe.fbl"
@@ -8,8 +9,15 @@
 : include "testing.fbl"
 
 
+
 : ( set "std_tests" [ --- ]
     : test "std" ([ --- ]
+        : describe "primitives" ([ --- ]
+            : set "x" (Number 5)
+            : set "xs" (@ run x "to_string")
+            : assert_equals "Number{ value: 5 }" xs "5.to_string() should return 'Number{ value: 5 }'"
+        )
+
         : describe "array" ([ --- ]
             : set "a" (default Array)
             : assert_equals 0 (a -> "length")      "empty array's length should be 0"
