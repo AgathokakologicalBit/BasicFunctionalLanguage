@@ -92,7 +92,7 @@ namespace FBL.Interpretation
                 return false;
 
             return Values.All(v => c.Values.ContainsKey(v.Key) && v.Value.DeepEquals(c.Values[v.Key], visitId))
-                && ((Parent == null && c.Parent == null) || Parent.DeepEquals(c.Parent, visitId));
+                && ((Parent == c.Parent) || (Parent?.DeepEquals(c.Parent, visitId) ?? false));
         }
     }
 }
