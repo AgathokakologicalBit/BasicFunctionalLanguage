@@ -5,7 +5,7 @@
 ` : set "print" void
 ` : set "puts" void
 
-: (set "main" [ args ]
+: (def "main" [ args ]
     : run functions_tests
     : run builtins_tests
 

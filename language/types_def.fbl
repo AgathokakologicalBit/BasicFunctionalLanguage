@@ -2,14 +2,14 @@
 : include "tools.fbl"
 
 
-: ( set "default" [ type ] type void )
-: ( set "typeof" [ object ] object "__type" )
+: def "default" ([ type ] type void)
+: def "typeof" ([ object ] object "__type")
 
 
-: set "__types" void
+: def "__types" void
 : run ([ --- ]
-    : set "__$setter" set
-    : set "__$getter" get
+    : def "__$setter" set
+    : def "__$getter" get
 
     : ( set "__types" [ action ]
         if (equals action <-)
@@ -22,17 +22,18 @@
 )
 
 
-: ( set "Type" [ name ] [ describer ]
-    : set "__$type_name" name
-    : set "__$type_set" set
-    : set "__$type_get" get
-    : set "__$type_props_count" 0
+: ( def "Type" [ name ] [ describer ]
+    : def "__$type_name" name
+    : def "__$type_def" def
+    : def "__$type_set" set
+    : def "__$type_get" get
+    : def "__$type_props_count" 0
 
-    : set "__$type_add_prop" ( [ name ]
-        : __$type_set (+ "__$type_var_" __$type_props_count) name
-        : __$type_set (+ "__$type_exs_" name) true
+    : def "__$type_add_prop" ( [ name ]
+        : __$type_def (+ "__$type_var_" __$type_props_count) name
+        : __$type_def (+ "__$type_exs_" name) true
         : __$type_set "__$type_props_count" (+ __$type_props_count 1)
-        : __$type_set (+ "__$type_val_" (- __$type_props_count 1)) void
+        : __$type_def (+ "__$type_val_" (- __$type_props_count 1)) void
         : __$type_set (+ "__$type_val_" (- __$type_props_count 1))
     )
 
@@ -42,11 +43,11 @@
     : describer __$type_add_prop
 
     ` We should return the type instantiator (object constructor)
-    : set "__$type_constructor" ([ constructor ]
-        : set "__$object_set" set
-        : set "__$object_get" get
+    : def "__$type_constructor" ([ constructor ]
+        : def "__$object_set" set
+        : def "__$object_get" get
 
-        : set "__$object_set_u" ( [ name ] run (
+        : def "__$object_set_u" ( [ name ] run (
             if (equals true (__$type_get (+ "__$type_exs_" name)))
                 ([ --- ] __$object_set (+ "__$object_var_" name))
                 ([ --- ]
@@ -54,7 +55,7 @@
                     : void  ` Return no value because of the error
                 )
         ))
-        : set "__$object_get_u" ( [ name ] run (
+        : def "__$object_get_u" ( [ name ] run (
             if (equals true (__$type_get (+ "__$type_exs_" name)))
                 ([ --- ] __$object_get (+ "__$object_var_" name))
                 ([ --- ]
@@ -72,9 +73,9 @@
         : __$object_set_u (__$type_get (+ "__$type_var_" 0)) __$object_set_u
         : __$object_set_u (__$type_get (+ "__$type_var_" 1)) __$object_get_u
         : __$object_set_u (__$type_get (+ "__$type_var_" 2)) ([ --- ]
-            : set "__$_obj_str-repr" (+ __$type_name "{ ")
+            : def "__$_obj_str-repr" (+ __$type_name "{ ")
             : loop (- __$type_props_count 3) ([ property_index ]
-                : set "__$_current-name" (__$type_get (+ "__$type_var_" (+ property_index 3)))
+                : def "__$_current-name" (__$type_get (+ "__$type_var_" (+ property_index 3)))
                 : set "__$_obj_str-repr" (+ __$_obj_str-repr __$_current-name)
                 : set "__$_obj_str-repr" (+ (+ __$_obj_str-repr ": ") (__$object_get_u __$_current-name))
                 : set "__$_obj_str-repr" (+ __$_obj_str-repr " ")  

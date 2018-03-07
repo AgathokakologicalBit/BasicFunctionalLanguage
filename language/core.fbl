@@ -1,16 +1,16 @@
 : include "operators.fbl"
 
 
-: ( set "void" [ --- ] void )
-: ( set "run" [ function ] function void )
-: ( set "id" [ value ] value )
+: ( def "void" [ --- ] void )
+: ( def "run" [ function ] function void )
+: ( def "id" [ value ] value )
 
 
-: ( set "__equals" equals )
+: ( def "__equals" equals )
 : ( set "equals" [ left ] [ right ] __if (__equals left right) true false )
 
 
-: ( set "true"  [ first ] [ second ] first )
-: ( set "false" [ first ] [ second ] second )
-: ( set "__if" if )
+: ( def "true"  [ first ] [ second ] first )
+: ( def "false" [ first ] [ second ] second )
+: ( def "__if" if )
 : ( set "if" [ condition ] [ on_true ] [ on_false ] condition on_true on_false )

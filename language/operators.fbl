@@ -1,12 +1,12 @@
-: set "<<" "$op_move_left"
-: set ">>" "$op_move_right"
+: def "<<" "$op_move_left"
+: def ">>" "$op_move_right"
 
-: set "<-" "$op_arrow_left"
-: set "->" "$op_arrow_right"
+: def "<-" "$op_arrow_left"
+: def "->" "$op_arrow_right"
 
-: set "<<<" "$op_move_l_left"
-: set ">>>" "$op_move_l_right"
+: def "<<<" "$op_move_l_left"
+: def ">>>" "$op_move_l_right"
 
-: set "<>" "$op_left_right"
+: def "<>" "$op_left_right"
 
-: set ">>=" "$op_pipe_optional"
+: def ">>=" "$op_pipe_optional"

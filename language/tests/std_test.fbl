@@ -9,16 +9,16 @@
 
 
 
-: ( set "std_tests" [ --- ]
+: ( def "std_tests" [ --- ]
     : test "std" ([ --- ]
         : describe "primitives" ([ --- ]
-            : set "x" (Number 5)
-            : set "xs" (@ run x "to_string")
+            : def "x" (Number 5)
+            : def "xs" (@ run x "to_string")
             : assert_equals "Number{ value: 5 }" xs "5.to_string() should return 'Number{ value: 5 }'"
         )
 
         : describe "array" ([ --- ]
-            : set "a" (default Array)
+            : def "a" (default Array)
             : assert_equals 0 (a -> "length")      "empty array's length should be 0"
             : assert_equals true (a "is_empty")    "array 'is_empty' should be true on initialization"
 
@@ -35,28 +35,28 @@
             : assert_equals  108  (reduce + 99 a)  "reduce an array to an int '108' by addition with base 99"
             : assert_equals   15  (reduce *  1 a)  "reduce an array to an int '15' by multiplication from 1"
 
-            : set "b" (map (+ 2) a)
+            : def "b" (map (+ 2) a)
             : assert_equals "753" (reduce + "" b)  "reduce an array to a string '753' by mapping with (+ 2)"
 
 
-            : set "c" (enumerate 1 11 2)
+            : def "c" (enumerate 1 11 2)
             : assert_equals 5 (c -> "length")        "enumeration from 1 to 11 with step 2 exclusive has 5 elements"
             : assert_equals "13579" (reduce + "" c)  "enumeration from 1 to 11 with step 2 is '13579'"
 
-            : set "d" (enumerate 9 (- 0 1) (- 0 2))
+            : def "d" (enumerate 9 (- 0 1) (- 0 2))
             : assert_equals 5 (d -> "length")        "enumeration from 9 to -1 with step -2 exclusive has 5 elements"
             : assert_equals "97531" (reduce + "" d)  "enumeration from 9 to -1 with step -2 is '97531'"
 
-            : set "e" (enumerate 0 500 1)
+            : def "e" (enumerate 0 500 1)
             : assert_equals 500 (e -> "length")      "big arrays from enumeration (500 elements)"
-            : set "em" (map (+ " ") e)
+            : def "em" (map (+ " ") e)
             : assert_equals 500 (e -> "length")      "big arrays mapping (500 elements)"
-            : set "es" (reduce + "array: [" em)
+            : def "es" (reduce + "array: [" em)
         )
 
         : describe "pair" ([ --- ]
-            : set "p" (PairOf "a" "b")
-            : set "q" (PairOf "b" "a")
+            : def "p" (PairOf "a" "b")
+            : def "q" (PairOf "b" "a")
 
             : assert_equals "Pair" (typeof p "name") "typeof (a, b) == 'Pair'"
             : assert_equals false (equals (p <-) (q <-)) "`=` operator is different for pair instances"
@@ -70,26 +70,26 @@
             : assert_equals "a" (p "second")   "(b, a).second == a"
             : assert_equals true (equals p q)  "(b, a) == (b, a)"
 
-            : set "_gf" ([ a ] [ b ] a)
-            : set "_gfu" (uncurry _gf)
-            : set "_gfuc" ([ p ] p "first")
-            : set "_gfc" (curry _gfuc)
+            : def "_gf" ([ a ] [ b ] a)
+            : def "_gfu" (uncurry _gf)
+            : def "_gfuc" ([ p ] p "first")
+            : def "_gfc" (curry _gfuc)
 
             : assert_equals "b" (_gfu p)       "uncurry ([a][b] a) (b, a) == b"
             : assert_equals "a" (_gfc "a" "b") "curry ([p] p.first) a b == b"
         )
 
         : describe "maybe" ([ --- ]
-            : set "x" (Just 5)
-            : set "y" (Just 7)
-            : set "z" (Nothing)
+            : def "x" (Just 5)
+            : def "y" (Just 7)
+            : def "z" (Nothing)
 
             : assert_equals "Maybe" (typeof x "name")  "typeof (Just a) == 'Maybe'"
             : assert_equals 5 (x "value")              "(Just a).value == a"
             : assert_equals void (z "value")           "(Nothing).value == void"
 
-            : set "pipe_a" ([ x ] @ return string x )
-            : set "pipe_b" ([ x ] @ return (+ 1) x )
+            : def "pipe_a" ([ x ] @ return string x )
+            : def "pipe_b" ([ x ] @ return (+ 1) x )
 
             : assert_equals (Just "6") (x >>= pipe_b >>= pipe_a)  "Just 5 >>= (+ 1) >>= string  ==  Just '6'"
             : assert_equals (Just "15") (x >>= pipe_a >>= pipe_b) "Just 5 >>= string >>= (+ 1) ==  Just '15'"

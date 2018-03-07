@@ -2,19 +2,19 @@
 : include "testing.fbl"
 
 
-: ( set "functions_tests" [ --- ]
+: ( def "functions_tests" [ --- ]
     ` Functions for recursion tests 
-    : ( set "factorial" [ n ] run (
+    : ( def "factorial" [ n ] run (
         if (equals n 0)
             ([ --- ] 1)
             ([ --- ] * n (factorial (- n 1)))
     ) )
 
     ` Functions for context tests
-    : ( set "value" void )
-    : ( set "return_from_global"    [ --- ] value )
-    : ( set "context_parent"        [ value ] run [ --- ] value )
-    : ( set "context_parent_global" [ value ] run return_from_global )
+    : ( def "value" void )
+    : ( def "return_from_global"    [ --- ] value )
+    : ( def "context_parent"        [ value ] run [ --- ] value )
+    : ( def "context_parent_global" [ value ] run return_from_global )
 
     : test "functions" ([ --- ]
         : describe "context_parent" ([ --- ]
@@ -36,7 +36,7 @@
     )
 )
 
-: ( set "builtins_tests" [ --- ]
+: ( def "builtins_tests" [ --- ]
     : test "built-ins" ([ --- ]
         : describe "math" ([ --- ]
             : assert_equals 10 (+ 0 10) "0 + 10 == 10"

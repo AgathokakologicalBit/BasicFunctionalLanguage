@@ -3,22 +3,22 @@
 : include "types.fbl"
 
 
-: ( set "PairType" (Type "Pair" ([ declare_property ]
+: def "PairType" (Type "Pair" ([ declare_property ]
     : declare_property "first"
     : declare_property "second"
-)))
+))
 
-: ( set "Pair" [ --- ] default PairType )
+: def "Pair" ([ --- ] default PairType)
 
-: ( set "PairOf" [ a ] [ b ] PairType [ self ]
+: def "PairOf" ([ a ] [ b ] PairType [ self ]
     : self <- "first" a
     : self <- "second" b
 )
 
-: (set "curry" [ function ] [ a ] [ b ] function (PairOf a b) )
+: def "curry" ([ function ] [ a ] [ b ] function (PairOf a b))
 
-: ( set "uncurry" [ function ] [ pair ] function (pair "first") (pair "second") )
+: def "uncurry" ([ function ] [ pair ] function (pair "first") (pair "second"))
 
-: ( set "pair_swap" [ pair ] PairOf (pair "second") (pair "first") )
+: def "pair_swap" ([ pair ] PairOf (pair "second") (pair "first"))
 
-: (set "ppair" [ pair ] puts "(" (pair "first") ", " (pair "second") ")\n" )
+: def "ppair" ([ pair ] puts "(" (pair "first") ", " (pair "second") ")\n")

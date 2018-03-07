@@ -4,7 +4,7 @@
 
 
 ` Array
-: ( set "ArrayType" (Type "Array" [ declare_property ]
+: ( def "ArrayType" (Type "Array" [ declare_property ]
     : declare_property "is_empty" true
     : declare_property "length" 0
 
@@ -20,14 +20,14 @@
 ))
 
 ` Standard constructor
-: ( set "Array" ([ --- ] ArrayType [ self ]
+: ( def "Array" ([ --- ] ArrayType [ self ]
     : self <- "push" ([ value ]
         : self <- "length" (+ (self -> "length") 1)
         : self <- "is_empty" false
 
         : self <- "top" value
 
-        : set "__raw" (self -> "raw")
+        : def "__raw" (self -> "raw")
         : self <- "raw" ([ getter ] getter false value __raw)
         : self
     )
@@ -53,9 +53,9 @@
 ))
 
 ` Itertools for arrays
-: ( set "map" [ function ] [ array ]
+: ( def "map" [ function ] [ array ]
     : ([ new_array ]
-        : ( set "__map" [ function ] [ array_raw ] run (
+        : ( def "__map" [ function ] [ array_raw ] run (
             if (array_raw ([#][_][_] #)) void
             ([ --- ]
                 : __map function (array_raw ([_][_][#] #))
@@ -67,15 +67,15 @@
     ) (default Array)
 )
 
-: ( set "reduce" [ function ] [ accumulator ] [ array ]
+: ( def "reduce" [ function ] [ accumulator ] [ array ]
     : foreach ([ value ]
         : set "accumulator" (function accumulator value)
     ) array
     : accumulator
 )
 
-: ( set "foreach" [ function ] [ array ]
-    : ( set "__foreach" [ function ] [ array_raw ] run (
+: ( def "foreach" [ function ] [ array ]
+    : ( def "__foreach" [ function ] [ array_raw ] run (
         if (array_raw ([#][_][_] #)) void
         ([ --- ]
             : __foreach function (array_raw ([_][_][#] #))
@@ -85,7 +85,7 @@
     : __foreach function (array -> "raw")
 )
 
-: ( set "enumerate" [ from ] [ to ] [ step ]
+: ( def "enumerate" [ from ] [ to ] [ step ]
     : ([ array_new ]
         : while ([ --- ] is_positive (* (sign (- to from)) (sign step)))
         ([ --- ]

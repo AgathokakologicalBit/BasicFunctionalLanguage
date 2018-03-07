@@ -4,12 +4,12 @@
 
 ` Declaring counters in global scope
 `  so 'assert_equals' can access them
-: set "_$tests_total"  void
-: set "_$tests_passed" void
+: def "_$tests_total"  void
+: def "_$tests_passed" void
 
 
 ` Tests wrappers
-: ( set "test" [ title ] [ code ]
+: ( def "test" [ title ] [ code ]
     : puts "\n===---   " title "   ---===\n"
 
     : set "_$tests_total"  0
@@ -18,14 +18,14 @@
     : puts "\nTests passed: " _$tests_passed " / " _$tests_total "\n"
 )
 
-: ( set "describe" [ title ] [ code ]
+: ( def "describe" [ title ] [ code ]
     : puts "\nTesting #" title "\n"
     : run code
 )
 
 
 ` Main testing functions
-: ( set "assert_equals" [ expected ] [ actual ] [ message ] run (
+: ( def "assert_equals" [ expected ] [ actual ] [ message ] run (
     : set "_$tests_total" (+ _$tests_total 1)
     : if (not (equals expected actual))
         ([ --- ] puts "  FAILED...\n    Expected " expected " but got " actual "\n    Message: " message "\n")

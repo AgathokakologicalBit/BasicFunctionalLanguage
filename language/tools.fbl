@@ -2,46 +2,46 @@
 
 
 ` Convertion tools
-: ( set "bool" [ value ] __if value true false )
-: ( set "bti" [ value ] value 1 0 )
-: ( set "bts" [ value ] value "true" "false" )
+: ( def "bool" [ value ] __if value true false )
+: ( def "bti" [ value ] value 1 0 )
+: ( def "bts" [ value ] value "true" "false" )
 
 
 ` Boolean logic
-: ( set "not" [ a ] a false true )
+: ( def "not" [ a ] a false true )
 
-: ( set "and" [ a ] [ b ] a b a )
-: ( set "or"  [ a ] [ b ] a a b )
-: ( set "xor" [ a ] [ b ] a (not b) b )
+: ( def "and" [ a ] [ b ] a b a )
+: ( def "or"  [ a ] [ b ] a a b )
+: ( def "xor" [ a ] [ b ] a (not b) b )
 
 
 ` Utility functions
-: ( set "compose" [ f ] [ g ] [ arg ] f ( g arg ))
-: ( set "@" compose )
-: ( set "arg_swap" [ function ] [ a ] [ b ] function b a )
-: ( set "power" [ _power ] [ function ] [ value ] run (
+: ( def "compose" [ f ] [ g ] [ arg ] f ( g arg ))
+: ( def "@" compose )
+: ( def "arg_swap" [ function ] [ a ] [ b ] function b a )
+: ( def "power" [ _power ] [ function ] [ value ] run (
     __if _power
         ([ --- ] function (power (- _power 1) function value))
         ([ --- ] value)
 ))
 
 ` Printing
-: ( set "pbool" [ value ] @ print bts value )
+: ( def "pbool" [ value ] @ print bts value )
 
 ` Working with numbers
-: ( set "is_positive" [ number ] bool (+ number (abs number)) )
-: ( set "is_negative" [ number ] bool (- number (abs number)) )
-: ( set "is_zero"     [ number ] not (bool number) )
-: ( set "sign"        [ number ] - (@ bti is_positive number) (@ bti is_negative number) )
+: ( def "is_positive" [ number ] bool (+ number (abs number)) )
+: ( def "is_negative" [ number ] bool (- number (abs number)) )
+: ( def "is_zero"     [ number ] not (bool number) )
+: ( def "sign"        [ number ] - (@ bti is_positive number) (@ bti is_negative number) )
 
-: ( set "is_greater"  [ a ] [ b ] is_positive (- a b) )
-: ( set "is_less"     [ a ] [ b ] is_negative (- a b) )
-: ( set "is_equal"    [ a ] [ b ] is_zero     (- a b) )
+: ( def "is_greater"  [ a ] [ b ] is_positive (- a b) )
+: ( def "is_less"     [ a ] [ b ] is_negative (- a b) )
+: ( def "is_equal"    [ a ] [ b ] is_zero     (- a b) )
 
 
 ` Iteration tools
-: ( set "loop" [ times ] [ code ]
-    : ( set "__loop" [ from ] [ times ] [ code ]
+: ( def "loop" [ times ] [ code ]
+    : ( def "__loop" [ from ] [ times ] [ code ]
         : (__if times   code void) (- from times)
         : (__if times __loop void) from (- times 1) code
     )
@@ -49,6 +49,6 @@
 )
 
 
-: ( set "while" [ condition ] [ code ]
+: ( def "while" [ condition ] [ code ]
     : run (@ if run condition ([ --- ] run code : while condition code) void)
 )

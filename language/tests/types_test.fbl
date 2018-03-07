@@ -3,9 +3,9 @@
 : include "types.fbl"
 
 
-: ( set "types_tests" [ args ]
+: ( def "types_tests" [ args ]
     : test "types" ([ --- ]
-        : set "Vector" (Type "Vector" ([ declare_property ]
+        : def "Vector" (Type "Vector" ([ declare_property ]
             ` Initializing properties by 0 by default
             : declare_property "x" 0
             : declare_property "y" 0
@@ -13,8 +13,8 @@
         ))
 
         ` Creating vector constructor aliases
-        : set "VectorZero" ([ --- ] default Vector)
-        : set "VectorOne" ([ --- ]
+        : def "VectorZero" ([ --- ] default Vector)
+        : def "VectorOne" ([ --- ]
             Vector ([ self ] ` Passing the custom constructor
                 : self <- "x" 1
                 : self <- "y" 1
@@ -24,9 +24,9 @@
     
         ` Testing vectors construction & usage
         : describe "creation" ([ --- ]
-            : set "a" (default VectorZero)
-            : set "b" (default VectorZero)
-            : set "c" (default VectorOne)
+            : def "a" (default VectorZero)
+            : def "b" (default VectorZero)
+            : def "c" (default VectorOne)
 
             : assert_equals "Vector" (typeof a "name") "(typeof a).name == 'Vector'"
             : assert_equals "Vector" (typeof b "name") "(typeof b).name == 'Vector'"
@@ -45,7 +45,7 @@
             : assert_equals 0 (a -> "y") "Getters should return actual values. (1, 0, 0).y == 0"
             : assert_equals 0 (a -> "z") "Getters should return actual values. (1, 0, 0).z == 0"
 
-            : set "d" a
+            : def "d" a
             : assert_equals true (equals a d)  "ref copied vector should be equal to the original. (1, 0, 0) == (1, 0, 0)"
             : d <- "z" 4
             : assert_equals true (equals a d)  "ref copy should change the base value"

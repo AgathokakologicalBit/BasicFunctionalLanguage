@@ -1,35 +1,35 @@
 : include "core.fbl"
 
 
-: set "#" ([ value ]
+: def "#" ([ value ]
     (if (equals (get_type value) "string") (String value))
     (if (equals (get_type value) "number") (Number value))
     (if (equals (get_type value) "function") (FunctionType value))
 )
 
-: set "NullType" (Type "Null" [ declare_property ])
+: def "NullType" (Type "Null" [ declare_property ])
 
-: set "NumberType"   (Type "Number"   [ dp ] dp "value" 0   )
-: set "StringType"   (Type "String"   [ dp ] dp "value" ""  )
-: set "FunctionType" (Type "Function" [ dp ] dp "value" void)
+: def "NumberType"   (Type "Number"   [ dp ] dp "value" 0   )
+: def "StringType"   (Type "String"   [ dp ] dp "value" ""  )
+: def "FunctionType" (Type "Function" [ dp ] dp "value" void)
 
 
-: set "Number" ([ value ]
+: def "Number" ([ value ]
     if (equals (get_type value) "number")
         (NumberType [ self ] self <- "value" value)
         Null
 )
 
-: set "String" ([ value ]
+: def "String" ([ value ]
     if (equals (get_type value) "string")
         (NumberType [ self ] self <- "value" value)
         Null
 )
 
-: set "Function" ([ value ]
+: def "Function" ([ value ]
     if (equals (get_type value) "function")
         (NumberType [ self ] self <- "value" value)
         Null
 )
 
-: set "Null" (default NullType)
+: def "Null" (default NullType)

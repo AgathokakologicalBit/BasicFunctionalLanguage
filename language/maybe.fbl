@@ -2,7 +2,7 @@
 : include "tools.fbl"
 
 
-: set "MaybeType" (Type "Maybe" [ declare_property ]
+: def "MaybeType" (Type "Maybe" [ declare_property ]
     : declare_property "value"
 
     : declare_property "is_nothing" true
@@ -11,13 +11,13 @@
     : declare_property >>=
 )
 
-: set "Nothing" (MaybeType [ self ]
+: def "Nothing" (MaybeType [ self ]
     : self <- >>= ([ function ] Nothing)
 
     : self <- <- void
 )
 
-: set "Just" ([ value ] MaybeType [ self ]
+: def "Just" ([ value ] MaybeType [ self ]
     : self <- "value" value
     : self <- "is_nothing" false
     : self <- "is_just" true
@@ -27,12 +27,12 @@
     : self <- <- void
 )
 
-: set "maybe" ( [ default ] [ transform ] [ mb ] run (
+: def "maybe" ( [ default ] [ transform ] [ mb ] run (
     if (mb "is_just")
         ([ --- ] @ transform mb "value")
         ([ --- ] default)
 ))
 
-: set "from_maybe" ( [ default ] [ mb ] maybe default id mb )
+: def "from_maybe" ( [ default ] [ mb ] maybe default id mb )
 
-: set "return" ( [ value ] Just value )
+: def "return" ( [ value ] Just value )
