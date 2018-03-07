@@ -16,6 +16,7 @@ namespace FBL.Interpretation
 
             globalContext.Values["get"].Context = globalContext;
             globalContext.Values["set"].Context = globalContext;
+            globalContext.Values["def"].Context = globalContext;
         }
 
 

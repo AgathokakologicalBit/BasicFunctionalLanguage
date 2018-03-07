@@ -25,7 +25,10 @@ namespace FBL.Interpretation
                 { Parameter = new VariableNode("name"), Context = this },
 
                 ["get"] = new FunctionNode((i, c) => Get(i, c), false, false)
-                { Parameter = new VariableNode("name"), Context = this }
+                { Parameter = new VariableNode("name"), Context = this },
+
+                ["def"] = new FunctionNode((i, c) => Def(i, c), false, false)
+                { Parameter = new VariableNode("name"), Context = this },
             };
         }
 
@@ -72,6 +75,15 @@ namespace FBL.Interpretation
             )
             { Parameter = new VariableNode("right"), Context = context };
 
+        public FunctionNode Def(ExpressionNode input, Context context)
+            => new FunctionNode(
+                (v, c) => context.Values.ContainsKey(LanguageModule.ToString(input, context).StringValue)
+                    ? throw new System.Exception("")
+                    : context.Values[LanguageModule.ToString(input, context).StringValue] = v,
+                true, false
+            )
+            { Parameter = new VariableNode("right"), Context = context };
+
 
         public override string ToString()
         {
@@ -87,7 +99,7 @@ namespace FBL.Interpretation
 
             if (this == c)
                 return true;
-            
+
             if (Values.Count != c?.Values.Count)
                 return false;
 
