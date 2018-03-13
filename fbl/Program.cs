@@ -6,7 +6,9 @@ using FBL.Parsing.Nodes;
 using FBL.Tokenization;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Threading;
 
 namespace FBL
 {
@@ -15,6 +17,7 @@ namespace FBL
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             if (args.Length == 0)
             {
@@ -62,7 +65,7 @@ namespace FBL
             }
 
             Console.WriteLine("\n\n===---  INTERPRETATION   ---===");
-            
+
 
             try
             {
